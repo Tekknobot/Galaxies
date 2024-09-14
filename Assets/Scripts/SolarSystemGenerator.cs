@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections.Generic;  // Needed for List
+using System.Collections.Generic;
 
 public class SolarSystemGenerator : MonoBehaviour
 {
@@ -8,8 +8,9 @@ public class SolarSystemGenerator : MonoBehaviour
     public GameObject sunPrefab;           // Prefab or primitive shape for the Sun
     public GameObject planetPrefab;        // Prefab or primitive shape for the Planets
     public Material orbitMaterial;         // Material for the orbital path LineRenderer
-    public Shader[] planetShaders;          // Array of possible shaders for the planets
-    public Shader sunShader;                // Shader for the Sun (can be null)
+    public Material[] planetMaterials;     // Array of materials for the planets
+    public Material sunShader;               // Shader for the Sun (can be null)
+    public GameObject fragmentPrefab;      // Prefab for the fragments used in shattering
 
     public float sunScale = 2.0f;          // Scale of the Sun
     public float planetMinScale = 0.2f;    // Minimum scale of a planet
@@ -31,10 +32,10 @@ public class SolarSystemGenerator : MonoBehaviour
     void Start()
     {
         // Create the Sun with the provided shader (or default shader if none is assigned)
-        GameObject sun = CreateSphere("Sun", Vector3.zero, sunScale, Color.yellow, sunShader);
+        GameObject sun = CreateSphere("Sun", Vector3.zero, sunScale, sunShader);
 
         // Shuffle the planet names to ensure unique assignment
-        planetNames.Shuffle(); // Custom method to shuffle the list
+        planetNames.Shuffle();
 
         // Generate unique orbits
         List<float> orbitRadii = GenerateUniqueOrbits();
@@ -51,8 +52,9 @@ public class SolarSystemGenerator : MonoBehaviour
             // Calculate the planet's initial position using polar coordinates
             Vector3 startPosition = CalculateOrbitPosition(orbitRadius, startingAngle);
 
-            // Create planet at the calculated position with a random shader
-            GameObject planet = CreateSphere($"Planet_{i + 1}", startPosition, planetScale, Random.ColorHSV(), GetRandomPlanetShader());
+            // Create planet at the calculated position with a random material
+            // Create planet at the calculated position with a random material
+            GameObject planet = CreateSphere($"Planet_{i + 1}", startPosition, planetScale, GetRandomPlanetMaterial());
             planet.tag = "Planet"; // Ensure the planet has the "Planet" tag
 
             // Add orbit behavior (rotation around the sun)
@@ -61,8 +63,13 @@ public class SolarSystemGenerator : MonoBehaviour
             orbit.orbitSpeed = orbitSpeed;
             orbit.distanceFromSun = orbitRadius;
 
+            // Add shatter behavior
+            Shatter shatter = planet.AddComponent<Shatter>();
+            shatter.fragmentPrefab = fragmentPrefab; // Set the fragment prefab
+
             // Add collision handling behavior
-            planet.AddComponent<PlanetCollisionHandler>();
+            PlanetCollisionHandler collisionHandler = planet.AddComponent<PlanetCollisionHandler>();
+            collisionHandler.shatter = shatter; // Reference to the Shatter component
 
             // Create orbital path
             CreateOrbitPath(orbitRadius);
@@ -74,7 +81,7 @@ public class SolarSystemGenerator : MonoBehaviour
     }
 
     // Function to create a sphere (either for Sun or Planets)
-    GameObject CreateSphere(string name, Vector3 position, float scale, Color color, Shader shader)
+    GameObject CreateSphere(string name, Vector3 position, float scale, Material material)
     {
         // Create a new GameObject and add a sphere
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -94,10 +101,8 @@ public class SolarSystemGenerator : MonoBehaviour
         rb.useGravity = false; // Assuming gravity should not affect planets
         rb.isKinematic = false; // Set to true if you want to manually control movement
 
-        // Add color to the sphere (using a material with the specified shader or default shader)
+        // Apply the material
         Renderer renderer = sphere.GetComponent<Renderer>();
-        Material material = new Material(shader ? shader : Shader.Find("Standard"));
-        material.color = color;
         renderer.material = material;
 
         return sphere;
@@ -115,7 +120,6 @@ public class SolarSystemGenerator : MonoBehaviour
     // Function to create the orbit path using LineRenderer
     void CreateOrbitPath(float radius)
     {
-        // Create an empty GameObject for the orbit
         GameObject orbit = new GameObject($"Orbit_{radius}");
         LineRenderer lineRenderer = orbit.AddComponent<LineRenderer>();
 
@@ -138,16 +142,16 @@ public class SolarSystemGenerator : MonoBehaviour
         }
     }
 
-    // Function to get a random shader from the available planet shaders
-    Shader GetRandomPlanetShader()
+    // Function to get a random material from the available planet materials
+    Material GetRandomPlanetMaterial()
     {
-        if (planetShaders.Length == 0)
+        if (planetMaterials.Length == 0)
         {
-            Debug.LogWarning("No planet shaders assigned. Using default shader.");
-            return Shader.Find("Standard"); // Fallback to a default shader
+            Debug.LogWarning("No planet materials assigned. Using default material.");
+            return new Material(Shader.Find("Standard")); // Fallback to a default material
         }
 
-        return planetShaders[Random.Range(0, planetShaders.Length)];
+        return planetMaterials[Random.Range(0, planetMaterials.Length)];
     }
 
     // Function to generate unique orbit radii
@@ -162,38 +166,36 @@ public class SolarSystemGenerator : MonoBehaviour
             orbitRadii.Add(radius);
         }
 
-        // Ensure we don't add duplicate orbits if orbitCount exceeds the range
         return orbitRadii;
     }
 
     // Function to get the orbit speed for a given orbit radius
     float GetOrbitSpeedForRadius(float radius)
     {
-        // Example: Use a simple mapping of radius to speed
-        float minSpeed = minOrbitSpeed;
-        float maxSpeed = maxOrbitSpeed;
-
         float normalizedRadius = Mathf.InverseLerp(minDistance, maxDistance, radius);
-        float speed = Mathf.Lerp(minSpeed, maxSpeed, normalizedRadius);
-
-        return speed;
+        return Mathf.Lerp(minOrbitSpeed, maxOrbitSpeed, normalizedRadius);
     }
 
     // Nested class for handling planet collisions
     public class PlanetCollisionHandler : MonoBehaviour
     {
+        public Shatter shatter;
+
         void OnCollisionEnter(Collision collision)
         {
-            // Debug collision detection
             Debug.Log($"Collision detected with: {collision.gameObject.name}");
 
-            // Check if the collision is with another planet
             if (collision.gameObject.CompareTag("Planet"))
             {
                 Debug.Log("Collided with another planet.");
-
-                // Destroy the current planet
-                Destroy(gameObject);
+                if (shatter != null)
+                {
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }
@@ -202,18 +204,17 @@ public class SolarSystemGenerator : MonoBehaviour
 // Orbit behavior for each planet
 public class Orbit : MonoBehaviour
 {
-    public Transform sun;          // Reference to the Sun
-    public float orbitSpeed;       // Speed of orbit
-    public float distanceFromSun;  // Distance from the Sun
+    public Transform sun;
+    public float orbitSpeed;
+    public float distanceFromSun;
 
     void Update()
     {
-        // Orbit around the sun
         transform.RotateAround(sun.position, Vector3.up, orbitSpeed * Time.deltaTime);
     }
 }
 
-// Extension method to shuffle a List
+// Extension method to shuffle a list
 public static class ListExtensions
 {
     private static System.Random rng = new System.Random();

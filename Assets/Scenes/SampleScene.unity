@@ -250,8 +250,16 @@ MonoBehaviour:
   sunPrefab: {fileID: 0}
   planetPrefab: {fileID: 0}
   orbitMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  planetShaders: []
-  sunShader: {fileID: 0}
+  planetMaterials:
+  - {fileID: 2100000, guid: 83621335f0c444d55922a46bdcb26cd4, type: 2}
+  - {fileID: 2100000, guid: 99095108ff9c444a3a00420172ced9c4, type: 2}
+  - {fileID: 2100000, guid: 2903f228196bf44df8d58b54ff8a839f, type: 2}
+  - {fileID: 2100000, guid: 8629cf03e237249c381d00ab671a5966, type: 2}
+  - {fileID: 2100000, guid: 7cf4af5f9c79740c8b9e63a9af666e27, type: 2}
+  - {fileID: 2100000, guid: a313e2dcc71c34902a72c262775c55a5, type: 2}
+  - {fileID: 2100000, guid: 880a2482ba78241d186eb34658b070b6, type: 2}
+  sunShader: {fileID: 2100000, guid: f0c23ef5bd46846b492ee6f18cb7bea3, type: 2}
+  fragmentPrefab: {fileID: 8624204544660807716, guid: d86f08b1c3026498589f32703c45f632, type: 3}
   sunScale: 3
   planetMinScale: 0.2
   planetMaxScale: 2
@@ -381,7 +389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followSpeed: 10
   smoothTime: 0.3
-  followDistance: 10
+  followDistance: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

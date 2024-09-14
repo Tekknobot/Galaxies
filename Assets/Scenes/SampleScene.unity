@@ -148,7 +148,7 @@ Light:
   m_GameObject: {fileID: 705507993}
   m_Enabled: 1
   serializedVersion: 10
-  m_Type: 1
+  m_Type: 3
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
@@ -259,7 +259,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: a313e2dcc71c34902a72c262775c55a5, type: 2}
   - {fileID: 2100000, guid: 880a2482ba78241d186eb34658b070b6, type: 2}
   sunShader: {fileID: 2100000, guid: f0c23ef5bd46846b492ee6f18cb7bea3, type: 2}
-  fragmentPrefab: {fileID: 8624204544660807716, guid: d86f08b1c3026498589f32703c45f632, type: 3}
   sunScale: 3
   planetMinScale: 0.2
   planetMaxScale: 2
@@ -267,6 +266,8 @@ MonoBehaviour:
   maxDistance: 20
   minOrbitSpeed: 5
   maxOrbitSpeed: 15
+  minSelfRotationSpeed: 5
+  maxSelfRotationSpeed: 20
 --- !u!4 &939302585
 Transform:
   m_ObjectHideFlags: 0

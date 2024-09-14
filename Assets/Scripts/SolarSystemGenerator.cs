@@ -9,8 +9,7 @@ public class SolarSystemGenerator : MonoBehaviour
     public GameObject planetPrefab;        // Prefab or primitive shape for the Planets
     public Material orbitMaterial;         // Material for the orbital path LineRenderer
     public Material[] planetMaterials;     // Array of materials for the planets
-    public Material sunShader;               // Shader for the Sun (can be null)
-    public GameObject fragmentPrefab;      // Prefab for the fragments used in shattering
+    public Material sunShader;             // Shader for the Sun (can be null)
 
     public float sunScale = 2.0f;          // Scale of the Sun
     public float planetMinScale = 0.2f;    // Minimum scale of a planet
@@ -19,6 +18,8 @@ public class SolarSystemGenerator : MonoBehaviour
     public float maxDistance = 20.0f;      // Maximum distance from the Sun
     public float minOrbitSpeed = 5.0f;     // Minimum orbit speed for planets
     public float maxOrbitSpeed = 15.0f;    // Maximum orbit speed for planets
+    public float minSelfRotationSpeed = 5.0f;  // Minimum self-rotation speed for planets
+    public float maxSelfRotationSpeed = 20.0f; // Maximum self-rotation speed for planets
 
     private List<string> planetNames = new List<string>
     {
@@ -29,10 +30,16 @@ public class SolarSystemGenerator : MonoBehaviour
         "Hercules", "Pegasus", "Callisto", "Europa", "Ganymede", "Io", "Perseus", "Cepheus", "Hydra", "Scorpius"
     };
 
+    private List<Vector3> planetPositions = new List<Vector3>(); // Track planet positions to avoid collisions
+
     void Start()
     {
         // Create the Sun with the provided shader (or default shader if none is assigned)
         GameObject sun = CreateSphere("Sun", Vector3.zero, sunScale, sunShader);
+
+        // Add rotation behavior to the Sun
+        RotateSun rotateSun = sun.AddComponent<RotateSun>();
+        rotateSun.rotationSpeed = 10.0f; // Set the rotation speed for the Sun
 
         // Shuffle the planet names to ensure unique assignment
         planetNames.Shuffle();
@@ -52,7 +59,14 @@ public class SolarSystemGenerator : MonoBehaviour
             // Calculate the planet's initial position using polar coordinates
             Vector3 startPosition = CalculateOrbitPosition(orbitRadius, startingAngle);
 
-            // Create planet at the calculated position with a random material
+            // Ensure the planet does not collide with existing planets
+            while (IsCollidingWithOtherPlanets(startPosition, planetScale))
+            {
+                // Adjust position until no collision is detected
+                startingAngle += 5f; // Increment angle to try a new position
+                startPosition = CalculateOrbitPosition(orbitRadius, startingAngle);
+            }
+
             // Create planet at the calculated position with a random material
             GameObject planet = CreateSphere($"Planet_{i + 1}", startPosition, planetScale, GetRandomPlanetMaterial());
             planet.tag = "Planet"; // Ensure the planet has the "Planet" tag
@@ -63,13 +77,9 @@ public class SolarSystemGenerator : MonoBehaviour
             orbit.orbitSpeed = orbitSpeed;
             orbit.distanceFromSun = orbitRadius;
 
-            // Add shatter behavior
-            Shatter shatter = planet.AddComponent<Shatter>();
-            shatter.fragmentPrefab = fragmentPrefab; // Set the fragment prefab
-
-            // Add collision handling behavior
-            PlanetCollisionHandler collisionHandler = planet.AddComponent<PlanetCollisionHandler>();
-            collisionHandler.shatter = shatter; // Reference to the Shatter component
+            // Add self-rotation behavior (rotation around the planet's own axis)
+            RotateAroundSelf rotateSelf = planet.AddComponent<RotateAroundSelf>();
+            rotateSelf.rotationSpeed = Random.Range(minSelfRotationSpeed, maxSelfRotationSpeed); // Assign random rotation speed
 
             // Create orbital path
             CreateOrbitPath(orbitRadius);
@@ -77,29 +87,33 @@ public class SolarSystemGenerator : MonoBehaviour
             // Assign a random unique name from the list
             string planetName = planetNames[i % planetNames.Count]; // Ensure name uniqueness
             planet.name = planetName;  // Set the name of the planet
+
+            // Add planet position to the list to check future collisions
+            planetPositions.Add(startPosition);
         }
     }
 
     // Function to create a sphere (either for Sun or Planets)
     GameObject CreateSphere(string name, Vector3 position, float scale, Material material)
     {
-        // Create a new GameObject and add a sphere
         GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.name = name;
         sphere.transform.position = position;
         sphere.transform.localScale = new Vector3(scale, scale, scale);
 
-        // Ensure a collider is present
+        // Ensure collider is present
         Collider collider = sphere.GetComponent<Collider>();
         if (collider == null)
         {
             collider = sphere.AddComponent<SphereCollider>();
         }
 
-        // Add Rigidbody to enable collision
+        // Add Rigidbody and set mass relative to the size of the planet
         Rigidbody rb = sphere.AddComponent<Rigidbody>();
-        rb.useGravity = false; // Assuming gravity should not affect planets
-        rb.isKinematic = false; // Set to true if you want to manually control movement
+        rb.useGravity = false;  // No gravity in space
+        rb.mass = Mathf.Pow(scale, 3) * 100f;  // Mass increases with the cube of the scale
+        rb.drag = 0.1f;  // Add slight drag to prevent too much bouncing
+        rb.angularDrag = 0.1f;  // Add slight angular drag for realistic rotation
 
         // Apply the material
         Renderer renderer = sphere.GetComponent<Renderer>();
@@ -115,6 +129,21 @@ public class SolarSystemGenerator : MonoBehaviour
         float x = Mathf.Sin(angleRadians) * radius;
         float z = Mathf.Cos(angleRadians) * radius;
         return new Vector3(x, 0, z); // y = 0 for a flat orbit on the XZ plane
+    }
+
+    // Function to check if a new planet position collides with any existing planet
+    bool IsCollidingWithOtherPlanets(Vector3 newPosition, float newScale)
+    {
+        foreach (Vector3 position in planetPositions)
+        {
+            float distance = Vector3.Distance(newPosition, position);
+            // Check if distance is less than the sum of the radii (plus a small buffer to prevent overlap)
+            if (distance < newScale + planetMinScale)
+            {
+                return true; // Collision detected
+            }
+        }
+        return false; // No collision
     }
 
     // Function to create the orbit path using LineRenderer
@@ -176,49 +205,52 @@ public class SolarSystemGenerator : MonoBehaviour
         return Mathf.Lerp(minOrbitSpeed, maxOrbitSpeed, normalizedRadius);
     }
 
-    // Nested class for handling planet collisions
-    public class PlanetCollisionHandler : MonoBehaviour
+    // Nested class for handling planet orbits
+    public class Orbit : MonoBehaviour
     {
-        public Shatter shatter;
+        public Transform sun;
+        public float orbitSpeed;
+        public float distanceFromSun;
 
-        void OnCollisionEnter(Collision collision)
+        void Update()
         {
-            Debug.Log($"Collision detected with: {collision.gameObject.name}");
-
-            if (collision.gameObject.CompareTag("Planet"))
-            {
-                Debug.Log("Collided with another planet.");
-                if (shatter != null)
-                {
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    Destroy(gameObject);
-                }
-            }
+            // Rotate the planet around the Sun
+            transform.RotateAround(sun.position, Vector3.up, orbitSpeed * Time.deltaTime);
         }
     }
-}
 
-// Orbit behavior for each planet
-public class Orbit : MonoBehaviour
-{
-    public Transform sun;
-    public float orbitSpeed;
-    public float distanceFromSun;
-
-    void Update()
+    // Nested class for rotating planet around its own axis
+    public class RotateAroundSelf : MonoBehaviour
     {
-        transform.RotateAround(sun.position, Vector3.up, orbitSpeed * Time.deltaTime);
+        public float rotationSpeed;
+
+        void Update()
+        {
+            // Rotate the planet around its Y-axis for self-rotation
+            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        }
     }
+
+    // Nested class for rotating the Sun around its own axis
+    public class RotateSun : MonoBehaviour
+    {
+        public float rotationSpeed = 10.0f; // Speed of Sun's rotation
+
+        void Update()
+        {
+            // Rotate the Sun around its Y-axis for self-rotation
+            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        }
+    }
+
 }
 
-// Extension method to shuffle a list
+// Extension method for shuffling lists
 public static class ListExtensions
 {
     private static System.Random rng = new System.Random();
 
+    // Shuffle extension method for List<T>
     public static void Shuffle<T>(this IList<T> list)
     {
         int n = list.Count;

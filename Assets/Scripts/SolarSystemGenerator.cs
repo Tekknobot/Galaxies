@@ -41,7 +41,7 @@ public class SolarSystemGenerator : MonoBehaviour
         Light sunLight = sun.AddComponent<Light>();
         sunLight.type = LightType.Point;
         sunLight.range = 100f;  // Adjust based on the size of your solar system
-        sunLight.intensity = 2.5f;  // Adjust the intensity to fit your needs
+        sunLight.intensity = 1.5f;  // Adjust the intensity to fit your needs
         sunLight.color = new Color(1f, 0.95f, 0.8f);  // A slight yellowish color to mimic sunlight
 
         // Enable soft shadows for realism

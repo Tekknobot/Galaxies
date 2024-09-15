@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;  // Add this namespace for scene management
 
 public class SolarSystemGenerator : MonoBehaviour
 {
@@ -57,6 +58,9 @@ public class SolarSystemGenerator : MonoBehaviour
         // Generate unique orbits
         List<float> orbitRadii = GenerateUniqueOrbits();
 
+        // Random planet count
+        numberOfPlanets = Random.Range(8, 56);
+
         // Generate planets
         for (int i = 0; i < numberOfPlanets; i++)
         {
@@ -102,6 +106,21 @@ public class SolarSystemGenerator : MonoBehaviour
             planetPositions.Add(startPosition);
         }
     }
+
+    void Update()
+    {
+        // Reset the scene when Spacebar is pressed
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ResetScene();
+        }
+    }
+
+    void ResetScene()
+    {
+        // Reload the current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }    
 
     // Function to create a sphere (either for Sun or Planets)
     GameObject CreateSphere(string name, Vector3 position, float scale, Material material)

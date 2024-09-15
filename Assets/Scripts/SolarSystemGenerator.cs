@@ -37,9 +37,19 @@ public class SolarSystemGenerator : MonoBehaviour
         // Create the Sun with the provided shader (or default shader if none is assigned)
         GameObject sun = CreateSphere("Sun", Vector3.zero, sunScale, sunShader);
 
+        // Add a Point Light to the Sun
+        Light sunLight = sun.AddComponent<Light>();
+        sunLight.type = LightType.Point;
+        sunLight.range = 100f;  // Adjust based on the size of your solar system
+        sunLight.intensity = 2.5f;  // Adjust the intensity to fit your needs
+        sunLight.color = new Color(1f, 0.95f, 0.8f);  // A slight yellowish color to mimic sunlight
+
+        // Enable soft shadows for realism
+        sunLight.shadows = LightShadows.Soft;  // Use soft shadows to create smoother shadow effects
+
         // Add rotation behavior to the Sun
         RotateSun rotateSun = sun.AddComponent<RotateSun>();
-        rotateSun.rotationSpeed = 10.0f; // Set the rotation speed for the Sun
+        rotateSun.rotationSpeed = 10.0f;  // Set the rotation speed for the Sun
 
         // Shuffle the planet names to ensure unique assignment
         planetNames.Shuffle();

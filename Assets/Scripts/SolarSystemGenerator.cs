@@ -164,7 +164,7 @@ public class SolarSystemGenerator : MonoBehaviour
 
         // Set the material and appearance of the line
         lineRenderer.material = orbitMaterial;
-        lineRenderer.widthMultiplier = 0.025f;
+        lineRenderer.widthMultiplier = 0.0125f;
 
         // Define the number of segments and points to draw a circle
         int segments = 100;

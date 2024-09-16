@@ -9,7 +9,7 @@ public class Asteroid : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Planet"))
+        if (collision.gameObject.CompareTag("Planet") || collision.gameObject.CompareTag("Sun"))
         {
             // Trigger the bullet-time effect
             StartCoroutine(BulletTimeEffect());

@@ -39,6 +39,7 @@ public class SolarSystemGenerator : MonoBehaviour
     {
         // Create the Sun with the provided shader (or default shader if none is assigned)
         GameObject sun = CreateSphere("Sun", Vector3.zero, sunScale, sunShader);
+        sun.tag = "Sun"; // Ensure the Sun has the "Sun" tag
 
         // Add a Point Light to the Sun
         Light sunLight = sun.AddComponent<Light>();

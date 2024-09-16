@@ -52,15 +52,18 @@ public class CameraControl : MonoBehaviour
         }
     }
 
-
     void HandleZoom()
     {
-        // Scroll wheel to zoom in/out
-        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        if (targetPlanet != null) // Only zoom when following a planet
+        {
+            // Scroll wheel to zoom in/out
+            float scrollInput = Input.GetAxis("Mouse ScrollWheel");
 
-        // Modify follow distance based on scroll input, with clamping to avoid extreme distances
-        followDistance = Mathf.Clamp(followDistance - scrollInput * 5f, 5f, 50f);  // Adjust the multiplier for sensitivity
+            // Modify follow distance based on scroll input, with clamping to avoid extreme distances
+            followDistance = Mathf.Clamp(followDistance - scrollInput * 5f, 5f, 50f);  // Adjust the multiplier for sensitivity
+        }
     }
+
 
     void HandleMouseInput()
     {

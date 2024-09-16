@@ -18,7 +18,7 @@ public class Asteroid : MonoBehaviour
         //Destroy(gameObject);
 
         // Create fragments
-        for (int i = 0; i < 34; i++) // Example: 10 fragments
+        for (int i = 0; i < 34; i++)
         {
             // Instantiate fragment
             GameObject fragment = Instantiate(fragmentPrefab, transform.position, Random.rotation);
@@ -32,11 +32,19 @@ public class Asteroid : MonoBehaviour
             if (rb != null)
             {
                 rb.mass = Mathf.Pow(scale, 3) * 10f; // Adjust based on desired mass scaling
-                rb.AddExplosionForce(0f, transform.position, 5f); // Add explosion force to simulate the breakup
+
+                // Set a custom velocity
+                Vector3 explosionDirection = Random.onUnitSphere; // Random direction
+                float speed = Random.Range(0.01f, 0.01f); // Control the speed here
+                rb.velocity = explosionDirection * speed;
+
+                // Optionally, add a small force for some variation
+                rb.AddForce(explosionDirection * speed * 0.01f, ForceMode.Impulse);
             }
 
             // Optionally, destroy fragments after some time
             Destroy(fragment, 15f); // Destroy after 15 seconds
         }
     }
+
 }

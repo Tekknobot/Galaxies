@@ -39,7 +39,7 @@ public class Asteroid : MonoBehaviour
                 rb.velocity = explosionDirection * speed;
 
                 // Optionally, add a small force for some variation
-                rb.AddForce(explosionDirection * speed * 0.0001f, ForceMode.Impulse);
+                rb.AddForce(explosionDirection * speed * 0.00001f, ForceMode.Impulse);
             }
 
             // Optionally, destroy fragments after some time

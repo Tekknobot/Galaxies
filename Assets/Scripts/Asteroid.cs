@@ -7,6 +7,14 @@ public class Asteroid : MonoBehaviour
     public float slowMotionDuration = 2f; // Duration for slow-motion
     public float slowMotionFactor = 0.2f; // How slow time gets (0.2 means 20% of normal speed)
 
+    private CameraControl cameraControl;  // Reference to the CameraControl script
+
+    void Start()
+    {
+        // Find the CameraControl script on the main camera
+        cameraControl = Camera.main.GetComponent<CameraControl>();
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Planet") || collision.gameObject.CompareTag("Sun"))
@@ -14,8 +22,14 @@ public class Asteroid : MonoBehaviour
             // Trigger the bullet-time effect
             StartCoroutine(BulletTimeEffect());
 
+            // Disable gameObject renderer
+            gameObject.GetComponent<Renderer>().enabled = false;
+            
             // Break apart the asteroid
             BreakApart();
+
+            // Focus and zoom on the planet the asteroid collided with
+            cameraControl.FocusOnPlanet(collision.transform);
         }
     }
 
@@ -28,7 +42,7 @@ public class Asteroid : MonoBehaviour
             GameObject fragment = Instantiate(fragmentPrefab, transform.position, Random.rotation);
 
             // Set scale for fragment
-            float scale = Random.Range(0.02f, 0.05f); // Example scale range for fragments
+            float scale = Random.Range(0.01f, 0.025f); // Example scale range for fragments
             fragment.transform.localScale = new Vector3(scale, scale, scale);
 
             // Add Rigidbody to fragments

@@ -23,8 +23,9 @@ public class CameraControl : MonoBehaviour
     void Update()
     {
         HandleMouseInput();
+        HandleZoom();
 
-        if (targetPlanet != null && !returningToOriginal)
+        if (targetPlanet != null && !returningToOriginal && !Input.GetMouseButton(0)) // Skip LookAt during rotation
         {
             // Calculate the desired position relative to the target planet
             Vector3 desiredPosition = targetPlanet.position - transform.forward * followDistance;
@@ -32,7 +33,7 @@ public class CameraControl : MonoBehaviour
             // Smoothly move the camera to the desired position
             transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
 
-            // Optionally, make the camera look at the target planet
+            // Optionally, make the camera look at the target planet (but not during rotation)
             transform.LookAt(targetPlanet);
         }
         else if (returningToOriginal)
@@ -49,6 +50,16 @@ public class CameraControl : MonoBehaviour
                 targetPlanet = null; // Ensure we stop following the planet
             }
         }
+    }
+
+
+    void HandleZoom()
+    {
+        // Scroll wheel to zoom in/out
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+
+        // Modify follow distance based on scroll input, with clamping to avoid extreme distances
+        followDistance = Mathf.Clamp(followDistance - scrollInput * 5f, 5f, 50f);  // Adjust the multiplier for sensitivity
     }
 
     void HandleMouseInput()

@@ -35,11 +35,11 @@ public class Asteroid : MonoBehaviour
 
                 // Set a custom velocity
                 Vector3 explosionDirection = Random.onUnitSphere; // Random direction
-                float speed = Random.Range(0.005f, 0.005f); // Control the speed here
+                float speed = Random.Range(0.0f, 0.0f); // Control the speed here
                 rb.velocity = explosionDirection * speed;
 
                 // Optionally, add a small force for some variation
-                rb.AddForce(explosionDirection * speed * 0.01f, ForceMode.Impulse);
+                rb.AddForce(explosionDirection * speed * 0.0001f, ForceMode.Impulse);
             }
 
             // Optionally, destroy fragments after some time

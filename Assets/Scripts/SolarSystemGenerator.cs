@@ -22,6 +22,8 @@ public class SolarSystemGenerator : MonoBehaviour
     public float minSelfRotationSpeed = 5.0f;  // Minimum self-rotation speed for planets
     public float maxSelfRotationSpeed = 20.0f; // Maximum self-rotation speed for planets
 
+    public List<GameObject> Planets { get; private set; } = new List<GameObject>();
+
     private List<string> planetNames = new List<string>
     {
         "Astra", "Zephira", "Orion", "Nova", "Aurora", "Helios", "Lunaris", "Vega", "Nebula", "Stellaris",
@@ -44,9 +46,7 @@ public class SolarSystemGenerator : MonoBehaviour
         sunLight.range = 100f;  // Adjust based on the size of your solar system
         sunLight.intensity = 1.5f;  // Adjust the intensity to fit your needs
         sunLight.color = new Color(1f, 0.95f, 0.8f);  // A slight yellowish color to mimic sunlight
-
-        // Enable soft shadows for realism
-        sunLight.shadows = LightShadows.Soft;  // Use soft shadows to create smoother shadow effects
+        sunLight.shadows = LightShadows.Soft;  // Use soft shadows for realistic effects
 
         // Add rotation behavior to the Sun
         RotateSun rotateSun = sun.AddComponent<RotateSun>();
@@ -60,6 +60,9 @@ public class SolarSystemGenerator : MonoBehaviour
 
         // Random planet count
         numberOfPlanets = Random.Range(8, 56);
+
+        // Initialize the Planets list
+        Planets = new List<GameObject>();
 
         // Generate planets
         for (int i = 0; i < numberOfPlanets; i++)
@@ -102,10 +105,14 @@ public class SolarSystemGenerator : MonoBehaviour
             string planetName = planetNames[i % planetNames.Count]; // Ensure name uniqueness
             planet.name = planetName;  // Set the name of the planet
 
+            // Add planet to the Planets list
+            Planets.Add(planet);
+
             // Add planet position to the list to check future collisions
             planetPositions.Add(startPosition);
         }
     }
+
 
     void Update()
     {

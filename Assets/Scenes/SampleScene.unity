@@ -5223,6 +5223,57 @@ MonoBehaviour:
   followSpeed: 10
   smoothTime: 0.3
   followDistance: 2.5
+--- !u!1 &1283987853
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1283987855}
+  - component: {fileID: 1283987854}
+  m_Layer: 0
+  m_Name: AsteroidGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1283987854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283987853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f3b891f8daec4aa9b95e1acbe2042e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  asteroidPrefab: {fileID: 8624204544660807716, guid: d86f08b1c3026498589f32703c45f632, type: 3}
+  fragmentPrefab: {fileID: 8624204544660807716, guid: be2c8643eef0544a19fb7414dee577ae, type: 3}
+  minDistanceFromSun: 30
+  maxDistanceFromSun: 50
+  minSpeed: 20
+  maxSpeed: 50
+  spawnRate: 1
+--- !u!4 &1283987855
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283987853}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -5231,3 +5282,4 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 939302585}
   - {fileID: 934776168}
+  - {fileID: 1283987855}

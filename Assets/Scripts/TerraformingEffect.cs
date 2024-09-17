@@ -13,6 +13,7 @@ public class TerraformingEffect : MonoBehaviour
     public Material newSphereMaterial;      // The material for the new sphere
     public float growthDuration = 5f;       // Duration for the new sphere to grow to planet size
     public float shrinkDuration = 2f;       // Duration for the new sphere to shrink into nothing
+    public float maxSphereAge = 25f;        // Maximum time before the sphere starts shrinking
 
     private Transform targetPlanet;         // The planet being terraformed
     private bool isOrbiting = false;        // Flag to check if the player is orbiting
@@ -20,6 +21,7 @@ public class TerraformingEffect : MonoBehaviour
     private float originalWidth;            // Original width of the LineRenderer
     private GameObject newSphere;           // The new sphere for terraforming effect
     private float terraformingStartTime;    // The time terraforming started
+    private float sphereCreationTime;       // The time the new sphere was created
     private Vector3 targetPlanetScale;      // The original scale of the planet being terraformed
     private Coroutine shrinkCoroutine;      // Reference to the shrinking coroutine
 
@@ -59,7 +61,7 @@ public class TerraformingEffect : MonoBehaviour
             newSphere.transform.position = targetPlanet.position;
 
             float elapsedTime = Mathf.Clamp01((Time.time - terraformingStartTime) / growthDuration);
-            newSphere.transform.localScale = Vector3.Lerp(Vector3.zero, targetPlanetScale * 1.0f, elapsedTime); // Grow 25% larger
+            newSphere.transform.localScale = Vector3.Lerp(Vector3.zero, targetPlanetScale * 1.10f, elapsedTime); // Grow 10% larger
 
             if (elapsedTime >= 1f)
             {
@@ -70,6 +72,17 @@ public class TerraformingEffect : MonoBehaviour
                 StartCoroutine(DelayedMaterialReplacement());
 
                 isTerraforming = false;
+            }
+        }
+
+        // Check if the new sphere has been around for longer than the max age
+        if (newSphere != null && Time.time - sphereCreationTime > maxSphereAge)
+        {
+            // Start shrinking and destroy the sphere if it has exceeded maxSphereAge
+            if (isTerraforming)
+            {
+                StartCoroutine(ShrinkAndDestroySphere());
+                isTerraforming = false; // Stop terraforming
             }
         }
     }
@@ -124,6 +137,9 @@ public class TerraformingEffect : MonoBehaviour
                     newSphereRenderer.material = newSphereMaterial;
                 }
             }
+
+            // Record the time the sphere was created
+            sphereCreationTime = Time.time;
         }
 
         // Start material replacement and then begin shrinking the sphere
@@ -138,7 +154,6 @@ public class TerraformingEffect : MonoBehaviour
         // Begin shrinking the new sphere
         shrinkCoroutine = StartCoroutine(ShrinkAndDestroySphere());
     }
-
 
     private IEnumerator ShrinkAndDestroySphere()
     {

@@ -161,26 +161,31 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void CreateClonesAtOrbit()
+void CreateClonesAtOrbit()
+{
+    float adjustedOrbitDistance = 1f; // Adjust this value to set the desired orbit distance
+
+    // Create multiple clones
+    for (int i = 0; i < numberOfClones; i++)
     {
-        // Create multiple clones
-        for (int i = 0; i < numberOfClones; i++)
+        // Calculate a unique starting angle for each clone
+        float angle = i * (360f / numberOfClones); // Spread the clones evenly around the orbit
+
+        // Calculate a position offset for each clone
+        Quaternion rotation = Quaternion.Euler(0, angle, 0);
+        Vector3 offset = rotation * Vector3.forward * adjustedOrbitDistance;
+        Vector3 clonePosition = targetPlanet.position + offset;
+
+        // Instantiate the clone
+        GameObject clone = Instantiate(clonePrefab, clonePosition, Quaternion.identity);
+
+        // Set up the clone's behavior
+        PlayerCloneController cloneController = clone.GetComponent<PlayerCloneController>();
+        if (cloneController != null)
         {
-            // Calculate a position offset for each clone
-            float angle = i * (360f / numberOfClones); // Spread the clones evenly around the orbit
-            Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * orbitDistance;
-            Vector3 clonePosition = targetPlanet.position + offset;
-
-            // Instantiate the clone
-            GameObject clone = Instantiate(clonePrefab, clonePosition, Quaternion.identity);
-
-            // Set up the clone's behavior
-            PlayerCloneController cloneController = clone.GetComponent<PlayerCloneController>();
-            if (cloneController != null)
-            {
-                cloneController.InitializeClone(targetPlanet, orbitDistance, orbitSpeed);
-            }
+            cloneController.InitializeClone(targetPlanet, adjustedOrbitDistance, orbitSpeed, angle);
         }
     }
+}
 
 }

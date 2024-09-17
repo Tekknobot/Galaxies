@@ -1,10 +1,9 @@
 using UnityEngine;
 
-public class PlayerCloneController : MonoBehaviour
+public class Satellite : MonoBehaviour
 {
     public float orbitDistance = 15f; // Distance from the planet while orbiting
     public float orbitSpeed = 20f; // Speed at which the player orbits the planet
-    public TerraformingEffect terraformingEffect; // Reference to the TerraformingEffect script
     public float startingAngle = 0f; // Unique starting angle for each clone
 
     private Transform targetPlanet; // The planet the clone will orbit
@@ -18,11 +17,6 @@ public class PlayerCloneController : MonoBehaviour
             isOrbiting = true;
             // Position the clone at the initial orbit position
             SetInitialPosition();
-            // Start the terraforming effect if it exists
-            if (terraformingEffect != null)
-            {
-                terraformingEffect.StartOrbiting(targetPlanet);
-            }
         }
     }
 
@@ -65,11 +59,5 @@ public class PlayerCloneController : MonoBehaviour
         orbitSpeed = speed;
         startingAngle = angle; // Set the unique starting angle for the clone
         isOrbiting = true;
-
-        // Start the terraforming effect for the clone
-        if (terraformingEffect != null)
-        {
-            terraformingEffect.StartOrbiting(targetPlanet);
-        }
     }
 }

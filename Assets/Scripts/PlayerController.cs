@@ -8,8 +8,6 @@ public class PlayerController : MonoBehaviour
     public float orbitDistance = 15f; // Distance from the planet while orbiting
     public float orbitSpeed = 20f; // Speed at which the player orbits the planet
     public TerraformingEffect terraformingEffect; // Reference to the TerraformingEffect script
-    public GameObject clonePrefab; // Prefab to clone
-    public int numberOfClones = 3; // Number of clones to create
 
     private Transform targetPlanet; // The planet the player will orbit
     private bool isOrbiting = false; // Flag to determine if the player is orbiting
@@ -56,12 +54,6 @@ public class PlayerController : MonoBehaviour
         if (isOrbiting && Input.GetKeyDown(KeyCode.G))
         {
             DetachFromOrbit(); // Detach from orbit
-        }
-
-        // Check for mouse click on the player
-        if (Input.GetMouseButtonDown(0)) // Left mouse button click
-        {
-            HandleMouseClick();
         }
     }
 
@@ -143,49 +135,4 @@ public class PlayerController : MonoBehaviour
             terraformingEffect.StopTerraformingEffect();
         }
     }
-
-    void HandleMouseClick()
-    {
-        // Create a ray from the camera to the mouse position
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        // Perform the raycast to check if the player object was clicked
-        if (Physics.Raycast(ray, out hit))
-        {
-            // Check if the hit object is the player
-            if (hit.transform == transform && isOrbiting && targetPlanet != null)
-            {
-                CreateClonesAtOrbit();
-            }
-        }
-    }
-
-void CreateClonesAtOrbit()
-{
-    float adjustedOrbitDistance = 1f; // Adjust this value to set the desired orbit distance
-
-    // Create multiple clones
-    for (int i = 0; i < numberOfClones; i++)
-    {
-        // Calculate a unique starting angle for each clone
-        float angle = i * (360f / numberOfClones); // Spread the clones evenly around the orbit
-
-        // Calculate a position offset for each clone
-        Quaternion rotation = Quaternion.Euler(0, angle, 0);
-        Vector3 offset = rotation * Vector3.forward * adjustedOrbitDistance;
-        Vector3 clonePosition = targetPlanet.position + offset;
-
-        // Instantiate the clone
-        GameObject clone = Instantiate(clonePrefab, clonePosition, Quaternion.identity);
-
-        // Set up the clone's behavior
-        PlayerCloneController cloneController = clone.GetComponent<PlayerCloneController>();
-        if (cloneController != null)
-        {
-            cloneController.InitializeClone(targetPlanet, adjustedOrbitDistance, orbitSpeed, angle);
-        }
-    }
-}
-
 }

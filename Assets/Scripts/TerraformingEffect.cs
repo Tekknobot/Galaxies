@@ -59,7 +59,7 @@ public class TerraformingEffect : MonoBehaviour
             newSphere.transform.position = targetPlanet.position;
 
             float elapsedTime = Mathf.Clamp01((Time.time - terraformingStartTime) / growthDuration);
-            newSphere.transform.localScale = Vector3.Lerp(Vector3.zero, targetPlanetScale * 1.15f, elapsedTime); // Grow 25% larger
+            newSphere.transform.localScale = Vector3.Lerp(Vector3.zero, targetPlanetScale * 1.10f, elapsedTime); // Grow 25% larger
 
             if (elapsedTime >= 1f)
             {
@@ -125,7 +125,20 @@ public class TerraformingEffect : MonoBehaviour
                 }
             }
         }
+
+        // Start material replacement and then begin shrinking the sphere
+        StartCoroutine(MaterialReplacementAndShrink());
     }
+
+    private IEnumerator MaterialReplacementAndShrink()
+    {
+        // Wait for the material replacement to complete
+        yield return DelayedMaterialReplacement();
+
+        // Begin shrinking the new sphere
+        shrinkCoroutine = StartCoroutine(ShrinkAndDestroySphere());
+    }
+
 
     private IEnumerator ShrinkAndDestroySphere()
     {
@@ -136,16 +149,16 @@ public class TerraformingEffect : MonoBehaviour
         Vector3 initialScale = newSphere.transform.localScale;
         Vector3 targetScale = Vector3.zero;
 
-        // Shrink the new sphere until it reaches 75% of its initial scale
-        while (newSphere != null && newSphere.transform.localScale.magnitude > initialScale.magnitude * 0.75f)
+        // Shrink the new sphere until it reaches % of its initial scale
+        while (newSphere != null && newSphere.transform.localScale.magnitude > initialScale.magnitude * 0.99f)
         {
             float t = elapsedTime / shrinkDuration;
-            newSphere.transform.localScale = Vector3.Lerp(initialScale, initialScale * 0.75f, t);
+            newSphere.transform.localScale = Vector3.Lerp(initialScale, initialScale * 0.99f, t);
             elapsedTime += Time.deltaTime;
             yield return null;  // Wait for the next frame
         }
 
-        // Wait for a moment at 75% of the scale
+        // Wait for a moment at % of the scale
         yield return new WaitForSeconds(0.5f);  // Adjust delay if necessary
 
         // Continue shrinking to zero
@@ -153,7 +166,7 @@ public class TerraformingEffect : MonoBehaviour
         while (newSphere != null && elapsedTime < shrinkDuration)
         {
             float t = elapsedTime / shrinkDuration;
-            newSphere.transform.localScale = Vector3.Lerp(initialScale * 0.75f, targetScale, t);
+            newSphere.transform.localScale = Vector3.Lerp(initialScale * 0.99f, targetScale, t);
             elapsedTime += Time.deltaTime;
             yield return null;  // Wait for the next frame
         }

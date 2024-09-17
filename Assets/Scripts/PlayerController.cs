@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
         {
             targetPlanet = collision.transform; // Set the target planet
             isOrbiting = true; // Start orbiting
-            cameraControl.FocusOnPlayer(transform); // Focus the camera on the player
+            cameraControl.FocusOnPlanet(targetPlanet.transform); // Focus the camera on the player
 
             // Position the player at the correct orbit distance from the planet
             Vector3 directionFromPlanet = (transform.position - targetPlanet.position).normalized;

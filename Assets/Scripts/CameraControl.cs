@@ -97,7 +97,7 @@ public class CameraControl : MonoBehaviour
             returningToOriginal = false; // Stop returning when close enough
             targetPlanet = null; // Ensure we stop following the planet
             // Set flag to return to player view
-            isReturningToPlayer = true;
+            //isReturningToPlayer = true;
         }
     }
 

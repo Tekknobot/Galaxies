@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour
     public CameraControl cameraControl; // Reference to the CameraControl script
     public float orbitDistance = 15f; // Distance from the planet while orbiting
     public float orbitSpeed = 20f; // Speed at which the player orbits the planet
+    public TerraformingEffect terraformingEffect; // Reference to the TerraformingEffect script
+    public GameObject clonePrefab; // Prefab to clone
+    public int numberOfClones = 3; // Number of clones to create
 
     private Transform targetPlanet; // The planet the player will orbit
     private bool isOrbiting = false; // Flag to determine if the player is orbiting
@@ -17,15 +20,19 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        // Q and E for Z-axis movement
-        float zMovement = 0f;
-        if (Input.GetKey(KeyCode.Q)) zMovement = -1f; // Move down along the Z-axis
-        if (Input.GetKey(KeyCode.E)) zMovement = 1f;  // Move up along the Z-axis
-
-        // Move the player relative to the camera's direction
-        if (!isOrbiting)
+        // Handle vertical movement with Q and E keys
+        if (Input.GetKey(KeyCode.Q))
         {
-            MoveRelativeToCamera(horizontal, vertical, zMovement);
+            Move(Vector3.down); // Move down along the Y-axis
+        }
+        else if (Input.GetKey(KeyCode.E))
+        {
+            Move(Vector3.up); // Move up along the Y-axis
+        }
+        else if (!isOrbiting)
+        {
+            // Handle movement relative to the camera's direction
+            MoveRelativeToCamera(horizontal, vertical);
         }
         else if (isOrbiting && targetPlanet != null)
         {
@@ -50,9 +57,15 @@ public class PlayerController : MonoBehaviour
         {
             DetachFromOrbit(); // Detach from orbit
         }
+
+        // Check for mouse click on the player
+        if (Input.GetMouseButtonDown(0)) // Left mouse button click
+        {
+            HandleMouseClick();
+        }
     }
 
-    void MoveRelativeToCamera(float horizontalInput, float verticalInput, float zMovement)
+    void MoveRelativeToCamera(float horizontalInput, float verticalInput)
     {
         // Get the forward and right directions of the camera, ignoring the Y-axis
         Vector3 cameraForward = mainCamera.transform.forward;
@@ -68,11 +81,14 @@ public class PlayerController : MonoBehaviour
         // Calculate the movement direction based on the camera's orientation
         Vector3 moveDirection = (cameraForward * verticalInput + cameraRight * horizontalInput).normalized;
 
-        // Add Z-axis movement (up and down relative to camera's view)
-        Vector3 zAxisMovement = Vector3.up * zMovement;
-
         // Move the player in the calculated direction
-        transform.Translate((moveDirection + zAxisMovement) * speed * Time.deltaTime, Space.World);
+        transform.Translate(moveDirection * speed * Time.deltaTime, Space.World);
+    }
+
+    void Move(Vector3 direction)
+    {
+        // Move the player in the specified direction
+        transform.Translate(direction * speed * Time.deltaTime, Space.World);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -87,6 +103,12 @@ public class PlayerController : MonoBehaviour
             // Position the player at the correct orbit distance from the planet
             Vector3 directionFromPlanet = (transform.position - targetPlanet.position).normalized;
             transform.position = targetPlanet.position + directionFromPlanet * orbitDistance;
+
+            // Start the terraforming effect
+            if (terraformingEffect != null)
+            {
+                terraformingEffect.StartOrbiting(targetPlanet);
+            }
         }
     }
 
@@ -114,5 +136,51 @@ public class PlayerController : MonoBehaviour
 
         // Allow the player to freely move again
         cameraControl.FocusOnPlayer(transform); // Re-focus the camera on the player
+
+        // Stop the terraforming effect
+        if (terraformingEffect != null)
+        {
+            terraformingEffect.StopTerraformingEffect();
+        }
     }
+
+    void HandleMouseClick()
+    {
+        // Create a ray from the camera to the mouse position
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        // Perform the raycast to check if the player object was clicked
+        if (Physics.Raycast(ray, out hit))
+        {
+            // Check if the hit object is the player
+            if (hit.transform == transform && isOrbiting && targetPlanet != null)
+            {
+                CreateClonesAtOrbit();
+            }
+        }
+    }
+
+    void CreateClonesAtOrbit()
+    {
+        // Create multiple clones
+        for (int i = 0; i < numberOfClones; i++)
+        {
+            // Calculate a position offset for each clone
+            float angle = i * (360f / numberOfClones); // Spread the clones evenly around the orbit
+            Vector3 offset = Quaternion.Euler(0, angle, 0) * Vector3.forward * orbitDistance;
+            Vector3 clonePosition = targetPlanet.position + offset;
+
+            // Instantiate the clone
+            GameObject clone = Instantiate(clonePrefab, clonePosition, Quaternion.identity);
+
+            // Set up the clone's behavior
+            PlayerCloneController cloneController = clone.GetComponent<PlayerCloneController>();
+            if (cloneController != null)
+            {
+                cloneController.InitializeClone(targetPlanet, orbitDistance, orbitSpeed);
+            }
+        }
+    }
+
 }

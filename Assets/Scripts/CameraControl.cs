@@ -68,7 +68,7 @@ public class CameraControl : MonoBehaviour
             float scrollInput = Input.GetAxis("Mouse ScrollWheel");
 
             // Modify follow distance based on scroll input, with clamping to avoid extreme distances
-            followDistance = Mathf.Clamp(followDistance - scrollInput * 5f, 5f, 50f);  // Adjust the multiplier for sensitivity
+            followDistance = Mathf.Clamp(followDistance - scrollInput * 5f, 1f, 50f);  // Adjust the multiplier for sensitivity
         }
     }
 

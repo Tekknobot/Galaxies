@@ -8,6 +8,9 @@ public class CameraControl : MonoBehaviour
     public float zoomInDistance = 5f;       // Distance to zoom in after collision
     public float zoomSpeed = 5f;            // Speed of zooming
 
+    public Transform player;                // Reference to the player object
+    public bool focusOnPlayer = false;      // Flag to determine if camera should focus on player
+
     private Camera cam;                     // Reference to the camera component
     private Transform targetPlanet;         // The planet to follow
     private Vector3 velocity = Vector3.zero; // For smoothing the movement
@@ -15,6 +18,7 @@ public class CameraControl : MonoBehaviour
     private Quaternion originalRotation;    // The original rotation of the camera
     private bool returningToOriginal = false; // Flag to determine if returning to original view
     private bool isZooming = false;         // Flag to indicate if we are zooming in on collision
+    private bool isReturningToPlayer = false; // Flag to determine if returning to player
 
     void Start()
     {
@@ -28,35 +32,72 @@ public class CameraControl : MonoBehaviour
         HandleMouseInput();
         HandleZoom();
 
-        if (isZooming)
+        if (focusOnPlayer && player != null)
         {
-            // When zooming, we override normal camera following logic
+            FocusOnPlayer();
+        }
+        else if (isZooming)
+        {
             PerformZoom();
         }
-        else if (targetPlanet != null && !returningToOriginal && !Input.GetMouseButton(0)) // Skip LookAt during rotation
+        else if (targetPlanet != null && !returningToOriginal)
         {
-            // Calculate the desired position relative to the target planet
-            Vector3 desiredPosition = targetPlanet.position - transform.forward * followDistance;
-
-            // Smoothly move the camera to the desired position
-            transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
-
-            // Optionally, make the camera look at the target planet (but not during rotation)
-            transform.LookAt(targetPlanet);
+            FocusOnPlanet();
         }
         else if (returningToOriginal)
         {
-            // Smoothly move the camera back to the original position and rotation
-            transform.position = Vector3.SmoothDamp(transform.position, originalPosition, ref velocity, smoothTime);
-            transform.rotation = Quaternion.Slerp(transform.rotation, originalRotation, smoothTime);
+            ReturnToOriginalView();
+        }
+        else if (isReturningToPlayer && player != null)
+        {
+            FocusOnPlayer();
+        }
+    }
 
-            // Check if the camera has returned to the original position and rotation
-            if (Vector3.Distance(transform.position, originalPosition) < 0.1f &&
-                Quaternion.Angle(transform.rotation, originalRotation) < 1f)
-            {
-                returningToOriginal = false; // Stop returning when close enough
-                targetPlanet = null; // Ensure we stop following the planet
-            }
+    void FocusOnPlayer()
+    {
+        if (player == null)
+            return;
+
+        // Calculate the desired position relative to the player
+        Vector3 desiredPosition = player.position - transform.forward * followDistance;
+
+        // Smoothly move the camera to the desired position
+        transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
+
+        // Make the camera look at the player
+        transform.LookAt(player);
+    }
+
+    void FocusOnPlanet()
+    {
+        if (targetPlanet == null)
+            return;
+
+        // Calculate the desired position relative to the target planet
+        Vector3 desiredPosition = targetPlanet.position - transform.forward * followDistance;
+
+        // Smoothly move the camera to the desired position
+        transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
+
+        // Make the camera look at the target planet
+        transform.LookAt(targetPlanet);
+    }
+
+    void ReturnToOriginalView()
+    {
+        // Smoothly move the camera back to the original position and rotation
+        transform.position = Vector3.SmoothDamp(transform.position, originalPosition, ref velocity, smoothTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, originalRotation, smoothTime);
+
+        // Check if the camera has returned to the original position and rotation
+        if (Vector3.Distance(transform.position, originalPosition) < 0.1f &&
+            Quaternion.Angle(transform.rotation, originalRotation) < 1f)
+        {
+            returningToOriginal = false; // Stop returning when close enough
+            targetPlanet = null; // Ensure we stop following the planet
+            // Set flag to return to player view
+            isReturningToPlayer = true;
         }
     }
 
@@ -68,7 +109,7 @@ public class CameraControl : MonoBehaviour
             float scrollInput = Input.GetAxis("Mouse ScrollWheel");
 
             // Modify follow distance based on scroll input, with clamping to avoid extreme distances
-            followDistance = Mathf.Clamp(followDistance - scrollInput * 5f, 1f, 50f);  // Adjust the multiplier for sensitivity
+            followDistance = Mathf.Clamp(followDistance - scrollInput * 5f, 2f, 50f);  // Adjust the multiplier for sensitivity
         }
     }
 
@@ -85,6 +126,7 @@ public class CameraControl : MonoBehaviour
                 {
                     targetPlanet = hit.collider.transform;
                     returningToOriginal = false; // Stop returning to original view when starting to follow a planet
+                    focusOnPlayer = false; // Stop focusing on the player when focusing on a planet
                 }
             }
         }
@@ -92,20 +134,32 @@ public class CameraControl : MonoBehaviour
         {
             returningToOriginal = true; // Start returning to the original view
             isZooming = false; // Ensure zooming is stopped
+            focusOnPlayer = false; // Stop focusing on the player
+            isReturningToPlayer = false; // Ensure returning to player is stopped
         }
     }
 
-    // New method to focus on a specific planet and zoom in
     public void FocusOnPlanet(Transform planet)
     {
         targetPlanet = planet;
-        returningToOriginal = false; // Stop returning to the original view
+        returningToOriginal = false; // Stop returning to original view
+        focusOnPlayer = false; // Stop focusing on the player
 
         // Start zooming
         isZooming = true;
     }
 
-    // Method to perform smooth zoom in
+    public void FocusOnPlayer(Transform playerTransform)
+    {
+        player = playerTransform;
+        targetPlanet = null; // Ensure we stop following the planet
+        returningToOriginal = false; // Stop returning to the original view
+
+        // Set flag to focus on the player
+        focusOnPlayer = true;
+        isReturningToPlayer = false; // Stop returning to player
+    }
+
     void PerformZoom()
     {
         if (targetPlanet == null)

@@ -60,7 +60,7 @@ public class SolarSystemGenerator : MonoBehaviour
         List<float> orbitRadii = GenerateUniqueOrbits();
 
         // Random planet count
-        numberOfPlanets = Random.Range(8, 56);
+        numberOfPlanets = Random.Range(8, numberOfPlanets);
 
         // Initialize the Planets list
         Planets = new List<GameObject>();

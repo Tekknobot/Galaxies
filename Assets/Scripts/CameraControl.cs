@@ -7,6 +7,7 @@ public class CameraControl : MonoBehaviour
     public float followDistance = 10f;      // Fixed distance from the planet
     public float zoomInDistance = 5f;       // Distance to zoom in after collision
     public float zoomSpeed = 5f;            // Speed of zooming
+    public float maxZoomDistance = 5f;      // Maximum zoom distance when focusing on the player
 
     public Transform player;                // Reference to the player object
     public bool focusOnPlayer = false;      // Flag to determine if camera should focus on player
@@ -58,6 +59,9 @@ public class CameraControl : MonoBehaviour
     {
         if (player == null)
             return;
+
+        // Set the follow distance to the maximum zoom distance
+        followDistance = maxZoomDistance;
 
         // Calculate the desired position relative to the player
         Vector3 desiredPosition = player.position - transform.forward * followDistance;
@@ -158,6 +162,10 @@ public class CameraControl : MonoBehaviour
         // Set flag to focus on the player
         focusOnPlayer = true;
         isReturningToPlayer = false; // Stop returning to player
+
+        // Ensure zooming to maximum zoom distance
+        isZooming = true;
+        followDistance = maxZoomDistance;
     }
 
     void PerformZoom()

@@ -5076,7 +5076,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberOfPlanets: 21
-  orbitCount: 8
+  orbitCount: 13
   sunPrefab: {fileID: 0}
   planetPrefab: {fileID: 0}
   orbitMaterial: {fileID: 2100000, guid: adcd34b7736134e3797eef84646c365c, type: 2}
@@ -5093,9 +5093,9 @@ MonoBehaviour:
   sunShader: {fileID: 2100000, guid: 67d1e4574027e4578b4883c28d925c73, type: 2}
   sunScale: 5
   planetMinScale: 1
-  planetMaxScale: 4
-  minDistance: 13
-  maxDistance: 21
+  planetMaxScale: 3
+  minDistance: 8
+  maxDistance: 34
   minOrbitSpeed: 5
   maxOrbitSpeed: 15
   minSelfRotationSpeed: 5
@@ -5203,7 +5203,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0871723, y: -0.89959055, z: 0.21045254, w: 0.37262258}
-  m_LocalPosition: {x: 19.13, y: 8.91, z: 19.13}
+  m_LocalPosition: {x: 30.31, y: 14.31, z: 30.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5226,6 +5226,7 @@ MonoBehaviour:
   followDistance: 2
   zoomInDistance: 2
   zoomSpeed: 5
+  maxZoomDistance: 15
   player: {fileID: 2044112436607190181}
   focusOnPlayer: 0
 --- !u!114 &963194230
@@ -5410,7 +5411,7 @@ MonoBehaviour:
   speed: 1
   mainCamera: {fileID: 963194227}
   cameraControl: {fileID: 963194229}
-  orbitDistance: 2
+  orbitDistance: 4
   orbitSpeed: 40
   terraformingEffect: {fileID: 520247798141965493}
   clonePrefab: {fileID: 4517203097862849371, guid: 10e1208023cf54eeaba3c9de94b3a558, type: 3}

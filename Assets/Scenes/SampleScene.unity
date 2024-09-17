@@ -5223,6 +5223,8 @@ MonoBehaviour:
   followSpeed: 10
   smoothTime: 0.3
   followDistance: 2.5
+  zoomInDistance: 5
+  zoomSpeed: 5
 --- !u!1 &1283987853
 GameObject:
   m_ObjectHideFlags: 0
@@ -5259,9 +5261,6 @@ MonoBehaviour:
   minSpeed: 20
   maxSpeed: 50
   spawnRate: 3
-  highlightMaterial: {fileID: 2100000, guid: a137af102be70468c93ddb47ce1f7a32, type: 2}
-  highlightDuration: 2
-  flashSpeed: 0.05
 --- !u!4 &1283987855
 Transform:
   m_ObjectHideFlags: 0

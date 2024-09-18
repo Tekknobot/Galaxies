@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerControllerWithGamepadSupport : MonoBehaviour
 {
@@ -20,7 +21,17 @@ public class PlayerControllerWithGamepadSupport : MonoBehaviour
 
     private Vector3 originalCameraPosition;
     private Quaternion originalCameraRotation;
-    private float originalFieldOfView;
+
+    // Zoom settings
+    public float zoomSpeed = 5f; // Speed of zoom using bumpers
+    public float minZoomDistance = 5f; // Minimum zoom distance to the player/target
+    public float maxZoomDistance = 50f; // Maximum zoom distance to the player/target
+
+    private float currentZoomDistance; // Current distance between the camera and the player/target
+
+    // List of all planets in the scene
+    private List<Transform> planets = new List<Transform>();
+    private int currentPlanetIndex = -1; // Index of the currently focused planet
 
     private void Start()
     {
@@ -29,7 +40,14 @@ public class PlayerControllerWithGamepadSupport : MonoBehaviour
         {
             originalCameraPosition = mainCamera.transform.position;
             originalCameraRotation = mainCamera.transform.rotation;
-            originalFieldOfView = mainCamera.fieldOfView;
+            currentZoomDistance = Vector3.Distance(mainCamera.transform.position, transform.position); // Initialize zoom distance
+        }
+
+        // Find all planets in the scene (assuming they are tagged "Planet")
+        GameObject[] planetObjects = GameObject.FindGameObjectsWithTag("Planet");
+        foreach (GameObject planet in planetObjects)
+        {
+            planets.Add(planet.transform);
         }
     }
 
@@ -70,9 +88,26 @@ public class PlayerControllerWithGamepadSupport : MonoBehaviour
             }
         }
 
+        if (Keyboard.current.gKey.wasPressedThisFrame || Gamepad.current.buttonEast.wasPressedThisFrame) // Map to Fire2
+        {
+            CycleThroughPlanets(); // Cycle through planets on buttonWest press
+        }
+
         if (isOrbiting && (Keyboard.current.gKey.wasPressedThisFrame || Gamepad.current.buttonWest.wasPressedThisFrame)) // Map to Fire2
         {
             DetachFromOrbit(); // Detach from orbit
+        }
+
+        // Handle zoom using the bumpers (left for zoom in, right for zoom out)
+        if (Gamepad.current != null)
+        {
+            HandleZoomWithBumpers();
+        }
+
+        // Reset the camera to its original position when the north button (Y or Triangle) is pressed
+        if (Gamepad.current.buttonNorth.wasPressedThisFrame)
+        {
+            ResetCameraToOriginalPosition();
         }
     }
 
@@ -153,7 +188,6 @@ public class PlayerControllerWithGamepadSupport : MonoBehaviour
         {
             mainCamera.transform.position = originalCameraPosition;
             mainCamera.transform.rotation = originalCameraRotation;
-            mainCamera.fieldOfView = originalFieldOfView;
         }
 
         // Stop the terraforming effect
@@ -168,4 +202,62 @@ public class PlayerControllerWithGamepadSupport : MonoBehaviour
             lineRenderer.enabled = false; // Disable LineRenderer
         }
     }
+
+    void CycleThroughPlanets()
+    {
+        if (planets.Count == 0)
+            return;
+
+        // Increment the current planet index and wrap around if necessary
+        currentPlanetIndex = (currentPlanetIndex + 1) % planets.Count;
+
+        // Get the new target planet
+        Transform newTargetPlanet = planets[currentPlanetIndex];
+
+        // Focus the camera on the new target planet
+        cameraControl.FocusOnPlanet(newTargetPlanet);
+    }
+
+    void HandleZoomWithBumpers()
+    {
+        // Get the direction to move the camera (towards the player or target)
+        Vector3 directionToPlayer = (mainCamera.transform.position - transform.position).normalized;
+
+        // Zoom in when pressing the right shoulder (bumper)
+        if (Gamepad.current.rightShoulder.isPressed)
+        {
+            currentZoomDistance -= zoomSpeed * Time.deltaTime;
+        }
+
+        // Zoom out when pressing the left shoulder (bumper)
+        if (Gamepad.current.leftShoulder.isPressed)
+        {
+            currentZoomDistance += zoomSpeed * Time.deltaTime;
+        }
+
+        // Clamp the zoom distance between the min and max limits
+        currentZoomDistance = Mathf.Clamp(currentZoomDistance, minZoomDistance, maxZoomDistance);
+
+        // Update the camera's position based on the new zoom distance
+        mainCamera.transform.position = transform.position + directionToPlayer * currentZoomDistance;
+    }
+
+    void ResetCameraToOriginalPosition()
+    {
+        // Reset the camera's position and rotation to the original values from game start
+        if (mainCamera != null)
+        {
+            // Reset camera's position and rotation
+            mainCamera.transform.position = originalCameraPosition;
+            mainCamera.transform.rotation = originalCameraRotation;
+
+            // Reset the zoom distance to the original zoom distance
+            currentZoomDistance = Vector3.Distance(originalCameraPosition, transform.position);
+
+            // Recalculate the camera's position based on the reset zoom distance
+            Vector3 directionToPlayer = (mainCamera.transform.position - transform.position).normalized;
+            mainCamera.transform.position = transform.position + directionToPlayer * currentZoomDistance;
+        }
+    }
+
 }

@@ -5100,6 +5100,7 @@ MonoBehaviour:
   maxOrbitSpeed: 15
   minSelfRotationSpeed: 5
   maxSelfRotationSpeed: 20
+  orbitThickness: 0.02
 --- !u!4 &939302585
 Transform:
   m_ObjectHideFlags: 0
@@ -5316,7 +5317,7 @@ MonoBehaviour:
   newMaterial: {fileID: 2100000, guid: 23157ca5501124659a74f879771c00b5, type: 2}
   newSphereMaterial: {fileID: 2100000, guid: 3b5a7ac133d9e414096486b98b001e07, type: 2}
   growthDuration: 2
-  shrinkDuration: 15
+  shrinkDuration: 5
   maxSphereAge: 25
 --- !u!23 &844258482565463074
 MeshRenderer:
@@ -5598,6 +5599,9 @@ MonoBehaviour:
   orbitSpeed: 40
   terraformingEffect: {fileID: 520247798141965493}
   lineRenderer: {fileID: 7390302652066814099}
+  zoomSpeed: 10
+  minZoomDistance: 2
+  maxZoomDistance: 50
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

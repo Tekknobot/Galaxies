@@ -22,6 +22,8 @@ public class SolarSystemGenerator : MonoBehaviour
     public float minSelfRotationSpeed = 5.0f;  // Minimum self-rotation speed for planets
     public float maxSelfRotationSpeed = 20.0f; // Maximum self-rotation speed for planets
 
+    public float orbitThickness = 0.0125f; // Thickness of the orbit lines
+
     public List<GameObject> Planets { get; private set; } = new List<GameObject>();
 
     private List<string> planetNames = new List<string>
@@ -114,7 +116,6 @@ public class SolarSystemGenerator : MonoBehaviour
         }
     }
 
-
     void Update()
     {
         // Reset the scene when Spacebar is pressed
@@ -128,7 +129,7 @@ public class SolarSystemGenerator : MonoBehaviour
     {
         // Reload the current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }    
+    }
 
     // Function to create a sphere (either for Sun or Planets)
     GameObject CreateSphere(string name, Vector3 position, float scale, Material material)
@@ -191,7 +192,7 @@ public class SolarSystemGenerator : MonoBehaviour
 
         // Set the material and appearance of the line
         lineRenderer.material = orbitMaterial;
-        lineRenderer.widthMultiplier = 0.0125f;
+        lineRenderer.widthMultiplier = orbitThickness; // Use the public field for thickness
 
         // Define the number of segments and points to draw a circle
         int segments = 100;
@@ -279,7 +280,6 @@ public class SolarSystemGenerator : MonoBehaviour
             transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
         }
     }
-
 }
 
 // Extension method for shuffling lists

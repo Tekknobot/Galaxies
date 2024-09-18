@@ -91,7 +91,7 @@ public class TerraformingEffect : MonoBehaviour
     private IEnumerator DelayedMaterialReplacement()
     {
         // Wait for 20 seconds
-        yield return new WaitForSeconds(20f);
+        yield return new WaitForSeconds(5f);
 
         // Apply the new material to the planet after the delay
         if (newMaterial != null)

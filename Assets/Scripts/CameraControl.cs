@@ -3,12 +3,14 @@ using UnityEngine.InputSystem; // Import the new Input System
 
 public class CameraControl : MonoBehaviour
 {
-    public float followSpeed = 10f;         // Speed at which the camera follows the planet
+    public float followSpeed = 10f;         // Speed at which the camera follows the target
     public float smoothTime = 0.3f;         // Time for smoothing the movement
-    public float followDistance = 10f;      // Fixed distance from the planet
+    public float followDistance = 10f;      // Default follow distance
     public float zoomInDistance = 5f;       // Distance to zoom in after collision
     public float zoomSpeed = 5f;            // Speed of zooming
-    public float maxZoomDistance = 5f;      // Maximum zoom distance when focusing on the player
+
+    public float maxZoomDistancePlayer = 5f; // Maximum zoom distance when focusing on the player
+    public float maxZoomDistancePlanet = 10f; // Maximum zoom distance when focusing on a planet
 
     public Transform player;                // Reference to the player object
     public bool focusOnPlayer = false;      // Flag to determine if camera should focus on player
@@ -62,8 +64,8 @@ public class CameraControl : MonoBehaviour
         if (player == null)
             return;
 
-        // Set the follow distance to the maximum zoom distance
-        followDistance = maxZoomDistance;
+        // Set the follow distance to the maximum zoom distance for player
+        followDistance = maxZoomDistancePlayer;
 
         // Calculate the desired position relative to the player
         Vector3 desiredPosition = player.position - transform.forward * followDistance;
@@ -79,6 +81,9 @@ public class CameraControl : MonoBehaviour
     {
         if (targetPlanet == null)
             return;
+
+        // Set the follow distance to the maximum zoom distance for planet
+        followDistance = maxZoomDistancePlanet;
 
         // Calculate the desired position relative to the target planet
         Vector3 desiredPosition = targetPlanet.position - transform.forward * followDistance;
@@ -167,6 +172,7 @@ public class CameraControl : MonoBehaviour
 
         // Start zooming
         isZooming = true;
+        followDistance = maxZoomDistancePlanet;
     }
 
     public void FocusOnPlayer(Transform playerTransform)
@@ -181,7 +187,7 @@ public class CameraControl : MonoBehaviour
 
         // Ensure zooming to maximum zoom distance
         isZooming = true;
-        followDistance = maxZoomDistance;
+        followDistance = maxZoomDistancePlayer;
     }
 
     void PerformZoom()

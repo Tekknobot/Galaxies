@@ -5223,10 +5223,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followSpeed: 10
   smoothTime: 0.3
-  followDistance: 2
-  zoomInDistance: 4
+  followDistance: 5
+  zoomInDistance: 5
   zoomSpeed: 5
-  maxZoomDistance: 2
+  maxZoomDistance: 5
   player: {fileID: 2044112436607190181}
   focusOnPlayer: 0
 --- !u!114 &963194230
@@ -5596,6 +5596,7 @@ MonoBehaviour:
   orbitDistance: 8
   orbitSpeed: 40
   terraformingEffect: {fileID: 520247798141965493}
+  lineRenderer: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

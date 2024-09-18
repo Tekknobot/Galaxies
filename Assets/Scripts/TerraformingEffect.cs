@@ -61,7 +61,7 @@ public class TerraformingEffect : MonoBehaviour
             newSphere.transform.position = targetPlanet.position;
 
             float elapsedTime = Mathf.Clamp01((Time.time - terraformingStartTime) / growthDuration);
-            newSphere.transform.localScale = Vector3.Lerp(Vector3.zero, targetPlanetScale * 1.10f, elapsedTime); // Grow 10% larger
+            newSphere.transform.localScale = Vector3.Lerp(Vector3.zero, targetPlanetScale * 1.0f, elapsedTime); // Grow 10% larger
 
             if (elapsedTime >= 1f)
             {

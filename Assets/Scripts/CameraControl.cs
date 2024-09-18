@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem; // Import the new Input System
 
 public class CameraControl : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class CameraControl : MonoBehaviour
     {
         HandleMouseInput();
         HandleZoom();
+        HandleGamepadInput(); // Added gamepad input handling
 
         if (focusOnPlayer && player != null)
         {
@@ -140,6 +142,20 @@ public class CameraControl : MonoBehaviour
             isZooming = false; // Ensure zooming is stopped
             focusOnPlayer = false; // Stop focusing on the player
             isReturningToPlayer = false; // Ensure returning to player is stopped
+        }
+    }
+
+    void HandleGamepadInput()
+    {
+        if (Gamepad.current != null)
+        {
+            if (Gamepad.current.buttonNorth.wasPressedThisFrame) // Assuming buttonNorth (e.g., Y button) triggers return
+            {
+                returningToOriginal = true; // Start returning to the original view
+                isZooming = false; // Ensure zooming is stopped
+                focusOnPlayer = false; // Stop focusing on the player
+                isReturningToPlayer = false; // Ensure returning to player is stopped
+            }
         }
     }
 

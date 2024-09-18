@@ -5375,6 +5375,7 @@ GameObject:
   - component: {fileID: 7390302652066814099}
   - component: {fileID: 520247798141965493}
   - component: {fileID: 2513708996671491788}
+  - component: {fileID: 7390302652066814100}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -5404,7 +5405,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1427927638182127118}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 419d9310cd1a34d31b6109b68049b7df, type: 3}
   m_Name: 
@@ -5415,8 +5416,6 @@ MonoBehaviour:
   orbitDistance: 8
   orbitSpeed: 40
   terraformingEffect: {fileID: 520247798141965493}
-  clonePrefab: {fileID: 4517203097862849371, guid: 10e1208023cf54eeaba3c9de94b3a558, type: 3}
-  numberOfClones: 1
 --- !u!136 &3069366777707461645
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5579,6 +5578,24 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &7390302652066814100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427927638182127118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff018c7f3067149e7a447ffc4acdbf3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1
+  mainCamera: {fileID: 963194227}
+  cameraControl: {fileID: 963194229}
+  orbitDistance: 8
+  orbitSpeed: 40
+  terraformingEffect: {fileID: 520247798141965493}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

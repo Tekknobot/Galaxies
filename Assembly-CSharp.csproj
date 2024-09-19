@@ -66,15 +66,13 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/Asteroid.cs" />
     <Compile Include="Assets/Scripts/Shatter.cs" />
-    <Compile Include="Assets/Scripts/Satellite.cs" />
-    <Compile Include="Assets/Scripts/SatelliteController.cs" />
+    <Compile Include="Assets/Scripts/SpacecraftController.cs" />
     <Compile Include="Assets/Scripts/AsteroidGenerator.cs" />
     <Compile Include="Assets/Scripts/SolarSystemGenerator.cs" />
-    <Compile Include="Assets/Scripts/PlayerControllerWithGamepadSupport.cs" />
-    <Compile Include="Assets/Scripts/TerraformingEffect.cs" />
-    <Compile Include="Assets/Scripts/CameraControl.cs" />
+    <Compile Include="Assets/Scripts/ArcadePlaneController.cs" />
+    <Compile Include="Assets/Scripts/RandomizePositionAndOrientation.cs" />
+    <Compile Include="Assets/Scripts/CameraFollow.cs" />
     <Compile Include="Assets/Scripts/PixelationPostProcessing.cs" />
-    <Compile Include="Assets/Scripts/PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/Shaders/PixelationShader.shader" />

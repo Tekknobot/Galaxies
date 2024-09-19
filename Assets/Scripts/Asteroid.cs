@@ -7,12 +7,9 @@ public class Asteroid : MonoBehaviour
     public float slowMotionDuration = 2f; // Duration for slow-motion
     public float slowMotionFactor = 0.1f; // How slow time gets (0.2 means 20% of normal speed)
 
-    private CameraControl cameraControl;  // Reference to the CameraControl script
-
     void Start()
     {
-        // Find the CameraControl script on the main camera
-        cameraControl = Camera.main.GetComponent<CameraControl>();
+
     }
 
     void OnCollisionEnter(Collision collision)

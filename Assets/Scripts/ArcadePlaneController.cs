@@ -113,6 +113,7 @@ public class ArcadePlaneController : MonoBehaviour
         Vector2 lookInput = Gamepad.current.leftStick.ReadValue(); // Pitch and yaw: left stick
         Vector2 movementInput = Gamepad.current.rightStick.ReadValue(); // Strafing and thrust: right stick
         float thrustInput = Gamepad.current.rightTrigger.ReadValue(); // Forward thrust (right trigger)
+        float stopInput = Gamepad.current.leftTrigger.ReadValue(); // Stop input (left trigger)
 
         // Toggle thruster effect based on thrust input
         if (thrustInput > 0f)
@@ -128,6 +129,15 @@ public class ArcadePlaneController : MonoBehaviour
             {
                 thrusterEffect.Stop();
             }
+        }
+
+        // Check if the left trigger is pressed to stop movement
+        if (stopInput > 0f)
+        {
+            // Smoothly stop the ship by reducing forces to zero
+            Vector3 velocity = rb.velocity;
+            rb.velocity = Vector3.Lerp(velocity, Vector3.zero, Time.fixedDeltaTime * smoothStopRate);
+            return; // Exit the method to skip further movement calculation
         }
 
         // Apply dash force if dashing

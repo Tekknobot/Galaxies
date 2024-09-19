@@ -10,13 +10,27 @@ public class PlanetInteractionController : MonoBehaviour
     private Transform closestPlanet;
     private Color targetColor;
 
+    // Extended list of neon colors for vibrant interactions
     private Color[] neonColors = new Color[]
     {
-        Color.red,          // Red
-        Color.green,        // Green
-        new Color(1f, 0f, 1f), // Magenta
-        new Color(1f, 0.647f, 0f), // Orange
-        new Color(1f, 0.75f, 0.8f) // Pink
+        Color.red,                   // Red
+        Color.green,                 // Green
+        new Color(1f, 0f, 1f),       // Magenta
+        new Color(1f, 0.647f, 0f),   // Orange
+        new Color(1f, 0.75f, 0.8f),  // Pink
+        Color.cyan,                  // Cyan
+        Color.yellow,                // Yellow
+        new Color(0.5f, 0f, 1f),     // Neon Purple
+        new Color(0.75f, 1f, 0f),    // Neon Lime
+        new Color(1f, 0.5f, 0.31f),  // Neon Coral
+        new Color(0.2f, 1f, 0.8f),   // Neon Aqua
+        new Color(0f, 1f, 0.5f),     // Neon Mint
+        new Color(1f, 0.36f, 0.36f), // Neon Salmon
+        new Color(0f, 0.78f, 1f),    // Neon Sky Blue
+        new Color(0.94f, 0f, 0.54f), // Neon Hot Pink
+        new Color(1f, 1f, 0.2f),     // Neon Lemon
+        new Color(0.4f, 0.8f, 1f),   // Neon Light Blue
+        new Color(0.9f, 0.1f, 0.2f)  // Neon Crimson
     };
 
     void Update()

@@ -10,6 +10,8 @@ public class ArcadePlaneController : MonoBehaviour
     public float smoothStopRate = 2f; // Lower rate at which the ship slows down to a stop for quicker deceleration
     public float lookAtCenterSpeed = 2f; // Speed at which the ship rotates to look at the center
 
+    public ParticleSystem thrusterEffect; // Reference to the thruster particle system
+
     private Rigidbody rb; // Rigidbody component
     private bool isLookingAtCenter = false; // Flag to check if the ship is looking at the center
 
@@ -23,6 +25,12 @@ public class ArcadePlaneController : MonoBehaviour
 
         // Rotate spacecraft to ensure correct orientation
         transform.Rotate(0f, 180f, 0f);
+
+        // Ensure thruster effect is off initially
+        if (thrusterEffect != null)
+        {
+            thrusterEffect.Stop();
+        }
     }
 
     private void Update()
@@ -58,6 +66,22 @@ public class ArcadePlaneController : MonoBehaviour
         Vector2 lookInput = Gamepad.current.leftStick.ReadValue(); // Pitch and yaw: left stick
         Vector2 movementInput = Gamepad.current.rightStick.ReadValue(); // Strafing and thrust: right stick
         float thrustInput = Gamepad.current.rightTrigger.ReadValue(); // Forward thrust (right trigger)
+
+        // Toggle thruster effect based on thrust input
+        if (thrustInput > 0f)
+        {
+            if (thrusterEffect != null && !thrusterEffect.isPlaying)
+            {
+                thrusterEffect.Play();
+            }
+        }
+        else
+        {
+            if (thrusterEffect != null && thrusterEffect.isPlaying)
+            {
+                thrusterEffect.Stop();
+            }
+        }
 
         // Calculate thrust direction with multiplier
         Vector3 thrustDirection = transform.forward * thrustInput * thrustForce;

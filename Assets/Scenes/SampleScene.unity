@@ -132,28 +132,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 78eb869a4e581496fa6ce7a5e0813e80, type: 3}
   m_PrefabInstance: {fileID: 1489428551}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &488757203
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 488757199}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3784097274739499645, guid: 78eb869a4e581496fa6ce7a5e0813e80, type: 3}
 --- !u!54 &488757205
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -195,9 +173,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thrustForce: 1000
   strafeForce: 1000
-  pitchSensitivity: -5
-  yawSensitivity: -5
+  pitchSensitivity: 5
+  yawSensitivity: 5
   smoothStopRate: 3
+  lookAtCenterSpeed: 3
 --- !u!114 &488757207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,14 +190,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sunTag: Sun
-  minX: -3000
-  maxX: 3000
-  minY: -3000
-  maxY: 3000
-  minZ: -3000
-  maxZ: 3000
+  minX: -10000
+  maxX: 10000
+  minY: -10000
+  maxY: 10000
+  minZ: -10000
+  maxZ: 10000
   maxRetries: 10
   retryDelay: 0.5
+--- !u!65 &488757210
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 488757199}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.8294835, y: 1.5527745, z: 3.6913621}
+  m_Center: {x: 0, y: -0.000000059604645, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -345,7 +345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spacecraft: {fileID: 488757202}
-  offset: {x: 0, y: 0.015, z: -0.1}
+  offset: {x: 0, y: 0.015, z: -0.2}
   smoothSpeed: 0.1
 --- !u!81 &786611317
 AudioListener:
@@ -387,7 +387,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 10000
+  far clip plane: 100000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -416,7 +416,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000021855694, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0, z: -7.52}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 488757202}
@@ -485,7 +485,7 @@ ParticleSystemRenderer:
   m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
-  m_MaxParticleSize: 0.2
+  m_MaxParticleSize: 0.1
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
   m_LengthScale: 2
@@ -1084,7 +1084,7 @@ ParticleSystem:
         m_RotationOrder: 4
     randomizeRotationDirection: 0
     gravitySource: 0
-    maxNumParticles: 75000
+    maxNumParticles: 5000
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
     rotation3D: 0
@@ -1231,7 +1231,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 2000
+      value: 100
       mode: 0
       spread: 0
       speed:
@@ -1350,7 +1350,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 25000
+      scalar: 10000
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -5244,12 +5244,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934776165}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.000000021855694, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1000, y: 0, z: 0}
+  m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 488757202}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &939302583
 GameObject:
@@ -5296,16 +5296,16 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 880a2482ba78241d186eb34658b070b6, type: 2}
   - {fileID: 2100000, guid: f0c23ef5bd46846b492ee6f18cb7bea3, type: 2}
   sunShader: {fileID: 2100000, guid: 67d1e4574027e4578b4883c28d925c73, type: 2}
-  sunScale: 377
-  planetMinScale: 55
-  planetMaxScale: 144
-  minDistance: 610
-  maxDistance: 2584
+  sunScale: 1597
+  planetMinScale: 377
+  planetMaxScale: 610
+  minDistance: 2584
+  maxDistance: 10946
   minOrbitSpeed: 5
   maxOrbitSpeed: 15
   minSelfRotationSpeed: 5
   maxSelfRotationSpeed: 20
-  orbitThickness: 1
+  orbitThickness: 5
 --- !u!4 &939302585
 Transform:
   m_ObjectHideFlags: 0
@@ -5442,10 +5442,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 78eb869a4e581496fa6ce7a5e0813e80, type: 3}
       insertIndex: -1
       addedObject: {fileID: 786611319}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 78eb869a4e581496fa6ce7a5e0813e80, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 934776168}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 78eb869a4e581496fa6ce7a5e0813e80, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 488757203}
+      addedObject: {fileID: 488757210}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 78eb869a4e581496fa6ce7a5e0813e80, type: 3}
       insertIndex: -1
       addedObject: {fileID: 488757205}
@@ -5462,6 +5465,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 705507995}
   - {fileID: 939302585}
-  - {fileID: 934776168}
   - {fileID: 1283987855}
   - {fileID: 1489428551}

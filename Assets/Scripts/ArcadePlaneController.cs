@@ -3,14 +3,15 @@ using UnityEngine.InputSystem;
 
 public class ArcadePlaneController : MonoBehaviour
 {
-    public float thrustForce = 1000f; // Forward thrust force
-    public float strafeForce = 500f; // Strafing force
-    public float pitchSensitivity = 1f; // Sensitivity for pitch control
-    public float yawSensitivity = 1f; // Sensitivity for yaw control
-    public float smoothStopRate = 5f; // Rate at which the ship slows down to a stop
+    public float thrustForce = 5000f; // Increased forward thrust force
+    public float strafeForce = 2000f; // Increased strafing force
+    public float pitchSensitivity = 1.5f; // Increased sensitivity for pitch control
+    public float yawSensitivity = 1.5f; // Increased sensitivity for yaw control
+    public float smoothStopRate = 2f; // Lower rate at which the ship slows down to a stop for quicker deceleration
+    public float lookAtCenterSpeed = 2f; // Speed at which the ship rotates to look at the center
 
     private Rigidbody rb; // Rigidbody component
-    private Vector3 lastVelocity; // Store the last velocity to handle smooth stopping
+    private bool isLookingAtCenter = false; // Flag to check if the ship is looking at the center
 
     private void Start()
     {
@@ -24,7 +25,7 @@ public class ArcadePlaneController : MonoBehaviour
         transform.Rotate(0f, 180f, 0f);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (Gamepad.current == null)
         {
@@ -32,20 +33,41 @@ public class ArcadePlaneController : MonoBehaviour
             return;
         }
 
+        // Check for left bumper input to trigger look at center
+        if (Gamepad.current.leftShoulder.wasPressedThisFrame)
+        {
+            isLookingAtCenter = true; // Start looking at the center immediately
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isLookingAtCenter)
+        {
+            LookAtCenter(); // Rotate towards the center if triggered
+        }
+        else
+        {
+            HandleMovement(); // Handle movement and rotation
+        }
+    }
+
+    private void HandleMovement()
+    {
         // Get input from the gamepad
         Vector2 lookInput = Gamepad.current.leftStick.ReadValue(); // Pitch and yaw: left stick
-        Vector2 movementInput = Gamepad.current.rightStick.ReadValue(); // Strafing: right stick
+        Vector2 movementInput = Gamepad.current.rightStick.ReadValue(); // Strafing and thrust: right stick
         float thrustInput = Gamepad.current.rightTrigger.ReadValue(); // Forward thrust (right trigger)
 
-        // Calculate thrust direction
+        // Calculate thrust direction with multiplier
         Vector3 thrustDirection = transform.forward * thrustInput * thrustForce;
-        rb.AddForce(thrustDirection * Time.deltaTime, ForceMode.Acceleration);
+        rb.AddForce(thrustDirection * Time.fixedDeltaTime, ForceMode.VelocityChange);
 
-        // Calculate strafing direction
-        Vector3 strafeDirection = transform.right * movementInput.x + transform.up * movementInput.y;
-        rb.AddForce(strafeDirection * strafeForce * Time.deltaTime, ForceMode.Acceleration);
+        // Calculate strafing direction with multiplier
+        Vector3 strafeDirection = (transform.right * movementInput.x + transform.up * movementInput.y) * strafeForce;
+        rb.AddForce(strafeDirection * Time.fixedDeltaTime, ForceMode.VelocityChange);
 
-        // Calculate pitch and yaw
+        // Calculate pitch and yaw with increased sensitivity
         float pitch = -lookInput.y * pitchSensitivity;
         float yaw = lookInput.x * yawSensitivity;
 
@@ -57,13 +79,31 @@ public class ArcadePlaneController : MonoBehaviour
         Quaternion targetRotation = pitchRotation * yawRotation * transform.rotation;
 
         // Smoothly rotate the spacecraft
-        rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f));
+        rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 5f));
 
         // Smoothly stop the ship when there is no input
         if (thrustInput == 0 && movementInput == Vector2.zero)
         {
             Vector3 velocity = rb.velocity;
-            rb.velocity = Vector3.Lerp(velocity, Vector3.zero, Time.deltaTime * smoothStopRate);
+            rb.velocity = Vector3.Lerp(velocity, Vector3.zero, Time.fixedDeltaTime * smoothStopRate);
+        }
+    }
+
+    private void LookAtCenter()
+    {
+        // Calculate the direction to look at the center (0, 0, 0)
+        Vector3 directionToCenter = (Vector3.zero - transform.position).normalized;
+
+        // Calculate the target rotation to face the center
+        Quaternion targetRotation = Quaternion.LookRotation(directionToCenter, Vector3.up);
+
+        // Smoothly rotate towards the center
+        rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * lookAtCenterSpeed));
+
+        // Stop looking at the center once the ship is facing it
+        if (Quaternion.Angle(transform.rotation, targetRotation) < 1f)
+        {
+            isLookingAtCenter = false; // Stop looking at the center
         }
     }
 }

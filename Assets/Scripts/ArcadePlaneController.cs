@@ -1,27 +1,30 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class ArcadePlaneController : MonoBehaviour
 {
-    public float thrustForce = 5000f; // Increased forward thrust force
-    public float strafeForce = 2000f; // Increased strafing force
-    public float pitchSensitivity = 1.5f; // Increased sensitivity for pitch control
-    public float yawSensitivity = 1.5f; // Increased sensitivity for yaw control
-    public float smoothStopRate = 2f; // Lower rate at which the ship slows down to a stop for quicker deceleration
-    public float lookAtCenterSpeed = 2f; // Speed at which the ship rotates to look at the center
-    public float dashForceMultiplier = 2f; // Multiplier for dash force
-    public float dashDuration = 0.5f; // Duration of the dash
-    public float dashCooldown = 1f; // Cooldown time between dashes
+    public float thrustForce = 5000f;
+    public float strafeForce = 2000f;
+    public float pitchSensitivity = 1.5f;
+    public float yawSensitivity = 1.5f;
+    public float smoothStopRate = 2f;
+    public float lookAtCenterSpeed = 2f;
+    public float dashForceMultiplier = 2f;
+    public float dashDuration = 0.5f;
+    public float dashCooldown = 1f;
 
-    public ParticleSystem thrusterEffect; // Reference to the thruster particle system
+    public ParticleSystem thrusterEffect;
 
-    private Rigidbody rb; // Rigidbody component
-    private bool isLookingAtCenter = false; // Flag to check if the ship is looking at the center
-    private bool isDashing = false; // Flag to indicate if dashing
-    private float dashTime = 0f; // Timer to keep track of dash duration
-    private float cooldownTime = 0f; // Timer to keep track of cooldown time
+    private Rigidbody rb;
+    private bool isLookingAtCenter = false;
+    private bool isDashing = false;
+    private float dashTime = 0f;
+    private float cooldownTime = 0f;
 
-    private void Start()
+    private InputAction restartAction; // InputAction for the restart button
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         if (rb == null)
@@ -29,6 +32,23 @@ public class ArcadePlaneController : MonoBehaviour
             Debug.LogError("Rigidbody component is missing!");
         }
 
+        // Initialize the InputAction for the restart button
+        restartAction = new InputAction(type: InputActionType.Button, binding: "<Gamepad>/start");
+        restartAction.performed += OnRestart;
+    }
+
+    private void OnEnable()
+    {
+        restartAction.Enable(); // Enable the restart action
+    }
+
+    private void OnDisable()
+    {
+        restartAction.Disable(); // Disable the restart action
+    }
+
+    private void Start()
+    {
         // Rotate spacecraft to ensure correct orientation
         transform.Rotate(0f, 180f, 0f);
 
@@ -171,5 +191,11 @@ public class ArcadePlaneController : MonoBehaviour
     private void EndDash()
     {
         isDashing = false;
+    }
+
+    private void OnRestart(InputAction.CallbackContext context)
+    {
+        // Reload the current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

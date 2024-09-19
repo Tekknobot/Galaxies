@@ -9,11 +9,17 @@ public class ArcadePlaneController : MonoBehaviour
     public float yawSensitivity = 1.5f; // Increased sensitivity for yaw control
     public float smoothStopRate = 2f; // Lower rate at which the ship slows down to a stop for quicker deceleration
     public float lookAtCenterSpeed = 2f; // Speed at which the ship rotates to look at the center
+    public float dashForceMultiplier = 2f; // Multiplier for dash force
+    public float dashDuration = 0.5f; // Duration of the dash
+    public float dashCooldown = 1f; // Cooldown time between dashes
 
     public ParticleSystem thrusterEffect; // Reference to the thruster particle system
 
     private Rigidbody rb; // Rigidbody component
     private bool isLookingAtCenter = false; // Flag to check if the ship is looking at the center
+    private bool isDashing = false; // Flag to indicate if dashing
+    private float dashTime = 0f; // Timer to keep track of dash duration
+    private float cooldownTime = 0f; // Timer to keep track of cooldown time
 
     private void Start()
     {
@@ -45,6 +51,27 @@ public class ArcadePlaneController : MonoBehaviour
         if (Gamepad.current.leftShoulder.wasPressedThisFrame)
         {
             isLookingAtCenter = true; // Start looking at the center immediately
+        }
+
+        // Check for dash input
+        bool isWestButtonPressed = Gamepad.current.xButton.isPressed;
+        bool isRightTriggerPressed = Gamepad.current.rightTrigger.ReadValue() > 0f;
+
+        // Dash mechanic
+        if (isWestButtonPressed && isRightTriggerPressed && !isDashing && cooldownTime <= 0f)
+        {
+            StartDash();
+        }
+
+        // Update cooldown and dash timers
+        cooldownTime -= Time.deltaTime;
+        if (isDashing)
+        {
+            dashTime -= Time.deltaTime;
+            if (dashTime <= 0f)
+            {
+                EndDash();
+            }
         }
     }
 
@@ -83,8 +110,11 @@ public class ArcadePlaneController : MonoBehaviour
             }
         }
 
+        // Apply dash force if dashing
+        float currentThrustForce = isDashing ? thrustForce * dashForceMultiplier : thrustForce;
+
         // Calculate thrust direction with multiplier
-        Vector3 thrustDirection = transform.forward * thrustInput * thrustForce;
+        Vector3 thrustDirection = transform.forward * thrustInput * currentThrustForce;
         rb.AddForce(thrustDirection * Time.fixedDeltaTime, ForceMode.VelocityChange);
 
         // Calculate strafing direction with multiplier
@@ -129,5 +159,17 @@ public class ArcadePlaneController : MonoBehaviour
         {
             isLookingAtCenter = false; // Stop looking at the center
         }
+    }
+
+    private void StartDash()
+    {
+        isDashing = true;
+        dashTime = dashDuration; // Reset dash timer
+        cooldownTime = dashCooldown; // Reset cooldown timer
+    }
+
+    private void EndDash()
+    {
+        isDashing = false;
     }
 }

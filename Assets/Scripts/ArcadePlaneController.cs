@@ -33,8 +33,8 @@ public class ArcadePlaneController : MonoBehaviour
         }
 
         // Get input from the gamepad
-        Vector2 lookInput = Gamepad.current.rightStick.ReadValue(); // Pitch and yaw: right stick
-        Vector2 movementInput = Gamepad.current.leftStick.ReadValue(); // Strafing: left stick
+        Vector2 lookInput = Gamepad.current.leftStick.ReadValue(); // Pitch and yaw: left stick
+        Vector2 movementInput = Gamepad.current.rightStick.ReadValue(); // Strafing: right stick
         float thrustInput = Gamepad.current.rightTrigger.ReadValue(); // Forward thrust (right trigger)
 
         // Calculate thrust direction

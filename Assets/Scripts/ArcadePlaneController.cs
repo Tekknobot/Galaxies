@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -10,9 +11,11 @@ public class ArcadePlaneController : MonoBehaviour
     public float yawSensitivity = 1.5f;
     public float smoothStopRate = 2f;
     public float lookAtCenterSpeed = 2f;
-    public float dashForceMultiplier = 2f;
+    public float dashForceMultiplier = 2f; // Used for boost as well
     public float dashDuration = 0.5f;
     public float dashCooldown = 1f;
+    public float stoppingRadius = 50f; // Adjustable stopping radius
+    public float temporaryStopDuration = 2f; // Time to stop before allowing movement again
 
     public ParticleSystem mainThrusterEffect;  // Main thruster effect
     public ParticleSystem leftThrusterEffect;   // Left thruster effect
@@ -23,6 +26,7 @@ public class ArcadePlaneController : MonoBehaviour
     private bool isDashing = false;
     private float dashTime = 0f;
     private float cooldownTime = 0f;
+    private bool isTemporarilyStopped = false; // State to track temporary stop
 
     private InputAction restartAction; // InputAction for the restart button
 
@@ -103,6 +107,7 @@ public class ArcadePlaneController : MonoBehaviour
         else
         {
             HandleMovement(); // Handle movement and rotation
+            CheckDistanceToPlanet(); // Check for proximity to planets
         }
     }
 
@@ -112,25 +117,25 @@ public class ArcadePlaneController : MonoBehaviour
         Vector2 lookInput = Gamepad.current.leftStick.ReadValue(); // Pitch and yaw: left stick
         Vector2 movementInput = Gamepad.current.rightStick.ReadValue(); // Strafing and thrust: right stick
         float thrustInput = Gamepad.current.rightTrigger.ReadValue(); // Forward thrust (right trigger)
-        float stopInput = Gamepad.current.leftTrigger.ReadValue(); // Stop input (left trigger)
 
         // Toggle thruster effects
         HandleThrusterEffects(thrustInput);
 
-        // Check if the left trigger is pressed to stop movement
-        if (stopInput > 0f)
+        // If there is no input, smoothly stop the ship
+        if (thrustInput == 0 && movementInput == Vector2.zero)
         {
-            // Smoothly stop the ship by reducing forces to zero
-            Vector3 velocity = rb.velocity;
-            rb.velocity = Vector3.Lerp(velocity, Vector3.zero, Time.fixedDeltaTime * smoothStopRate);
-            return; // Exit the method to skip further movement calculation
+            SmoothStop(); // Smoothly stop the ship
         }
 
-        // Apply dash force if dashing
-        float currentThrustForce = isDashing ? thrustForce * dashForceMultiplier : thrustForce;
+        // Calculate the effective thrust
+        float effectiveThrustForce = thrustForce;
+        if (Gamepad.current.xButton.isPressed) // If boosting
+        {
+            effectiveThrustForce *= dashForceMultiplier; // Use dash force multiplier for boost
+        }
 
-        // Calculate thrust direction with multiplier
-        Vector3 thrustDirection = transform.forward * thrustInput * currentThrustForce;
+        // Apply thrust
+        Vector3 thrustDirection = transform.forward * thrustInput * effectiveThrustForce;
         rb.AddForce(thrustDirection * Time.fixedDeltaTime, ForceMode.VelocityChange);
 
         // Calculate strafing direction with multiplier
@@ -150,13 +155,42 @@ public class ArcadePlaneController : MonoBehaviour
 
         // Smoothly rotate the spacecraft
         rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 5f));
+    }
 
-        // Smoothly stop the ship when there is no input
-        if (thrustInput == 0 && movementInput == Vector2.zero)
+    private void SmoothStop()
+    {
+        Vector3 velocity = rb.velocity;
+        rb.velocity = Vector3.Lerp(velocity, Vector3.zero, Time.fixedDeltaTime * smoothStopRate);
+    }
+
+    private void CheckDistanceToPlanet()
+    {
+        // Find all colliders tagged as "Planet"
+        Collider[] planets = Physics.OverlapSphere(transform.position, stoppingRadius);
+
+        foreach (var planet in planets)
         {
-            Vector3 velocity = rb.velocity;
-            rb.velocity = Vector3.Lerp(velocity, Vector3.zero, Time.fixedDeltaTime * smoothStopRate);
+            if (planet.CompareTag("Planet"))
+            {
+                float distanceToSurface = Vector3.Distance(transform.position, planet.transform.position) - (planet.bounds.extents.y); // Adjust for radius
+                if (distanceToSurface <= stoppingRadius)
+                {
+                    StartCoroutine(TemporaryStop()); // Start coroutine to stop movement temporarily
+                    break; // Stop checking once the ship has been affected
+                }
+            }
         }
+    }
+
+    private IEnumerator TemporaryStop()
+    {
+        isTemporarilyStopped = true; // Set stopped state
+        SmoothStop(); // Smoothly stop the ship
+
+        // Wait for the temporary stop duration
+        yield return new WaitForSeconds(temporaryStopDuration);
+
+        isTemporarilyStopped = false; // Reset stopped state
     }
 
     private void HandleThrusterEffects(float thrustInput)

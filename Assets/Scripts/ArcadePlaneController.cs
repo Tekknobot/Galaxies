@@ -14,7 +14,9 @@ public class ArcadePlaneController : MonoBehaviour
     public float dashDuration = 0.5f;
     public float dashCooldown = 1f;
 
-    public ParticleSystem thrusterEffect;
+    public ParticleSystem mainThrusterEffect;  // Main thruster effect
+    public ParticleSystem leftThrusterEffect;   // Left thruster effect
+    public ParticleSystem rightThrusterEffect;  // Right thruster effect
 
     private Rigidbody rb;
     private bool isLookingAtCenter = false;
@@ -52,11 +54,8 @@ public class ArcadePlaneController : MonoBehaviour
         // Rotate spacecraft to ensure correct orientation
         transform.Rotate(0f, 180f, 0f);
 
-        // Ensure thruster effect is off initially
-        if (thrusterEffect != null)
-        {
-            thrusterEffect.Stop();
-        }
+        // Ensure thruster effects are off initially
+        StopAllThrusterEffects();
     }
 
     private void Update()
@@ -115,21 +114,8 @@ public class ArcadePlaneController : MonoBehaviour
         float thrustInput = Gamepad.current.rightTrigger.ReadValue(); // Forward thrust (right trigger)
         float stopInput = Gamepad.current.leftTrigger.ReadValue(); // Stop input (left trigger)
 
-        // Toggle thruster effect based on thrust input
-        if (thrustInput > 0f)
-        {
-            if (thrusterEffect != null && !thrusterEffect.isPlaying)
-            {
-                thrusterEffect.Play();
-            }
-        }
-        else
-        {
-            if (thrusterEffect != null && thrusterEffect.isPlaying)
-            {
-                thrusterEffect.Stop();
-            }
-        }
+        // Toggle thruster effects
+        HandleThrusterEffects(thrustInput);
 
         // Check if the left trigger is pressed to stop movement
         if (stopInput > 0f)
@@ -171,6 +157,41 @@ public class ArcadePlaneController : MonoBehaviour
             Vector3 velocity = rb.velocity;
             rb.velocity = Vector3.Lerp(velocity, Vector3.zero, Time.fixedDeltaTime * smoothStopRate);
         }
+    }
+
+    private void HandleThrusterEffects(float thrustInput)
+    {
+        if (thrustInput > 0f)
+        {
+            if (mainThrusterEffect != null && !mainThrusterEffect.isPlaying)
+            {
+                mainThrusterEffect.Play(); // Play main thruster
+            }
+
+            // Play left and right thruster effects if boosting
+            if (Gamepad.current.xButton.isPressed) // If boosting
+            {
+                if (leftThrusterEffect != null && !leftThrusterEffect.isPlaying)
+                {
+                    leftThrusterEffect.Play(); // Play left thruster
+                }
+                if (rightThrusterEffect != null && !rightThrusterEffect.isPlaying)
+                {
+                    rightThrusterEffect.Play(); // Play right thruster
+                }
+            }
+        }
+        else
+        {
+            StopAllThrusterEffects(); // Stop all effects if no thrust
+        }
+    }
+
+    private void StopAllThrusterEffects()
+    {
+        if (mainThrusterEffect != null && mainThrusterEffect.isPlaying) mainThrusterEffect.Stop();
+        if (leftThrusterEffect != null && leftThrusterEffect.isPlaying) leftThrusterEffect.Stop();
+        if (rightThrusterEffect != null && rightThrusterEffect.isPlaying) rightThrusterEffect.Stop();
     }
 
     private void LookAtCenter()

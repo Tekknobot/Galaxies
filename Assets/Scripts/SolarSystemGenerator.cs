@@ -8,6 +8,7 @@ public class SolarSystemGenerator : MonoBehaviour
     public int orbitCount = 5;             // Number of unique orbits
     public GameObject sunPrefab;           // Prefab or primitive shape for the Sun
     public GameObject planetPrefab;        // Prefab or primitive shape for the Planets
+    public GameObject starrySystemPrefab;  // Prefab for the starry system to be placed at the center of each planet and the sun
     public Material orbitMaterial;         // Material for the orbital path LineRenderer
     public Material[] planetMaterials;     // Array of materials for the planets
     public Material sunShader;             // Shader for the Sun (can be null)
@@ -54,6 +55,9 @@ public class SolarSystemGenerator : MonoBehaviour
         // Add rotation behavior to the Sun
         RotateSun rotateSun = sun.AddComponent<RotateSun>();
         rotateSun.rotationSpeed = 10.0f;  // Set the rotation speed for the Sun
+
+        // Instantiate starry system at the sun's position
+        InstantiateStarrySystem(sun.transform.position);
 
         // Shuffle the planet names to ensure unique assignment
         planetNames.Shuffle();
@@ -113,6 +117,9 @@ public class SolarSystemGenerator : MonoBehaviour
 
             // Add planet position to the list to check future collisions
             planetPositions.Add(startPosition);
+
+            // Instantiate starry system at the planet's position
+            InstantiateStarrySystem(planet.transform.position);
         }
     }
 
@@ -158,6 +165,19 @@ public class SolarSystemGenerator : MonoBehaviour
         renderer.material = material;
 
         return sphere;
+    }
+
+    // Function to instantiate starry system at a given position
+    void InstantiateStarrySystem(Vector3 position)
+    {
+        if (starrySystemPrefab != null)
+        {
+            Instantiate(starrySystemPrefab, position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogWarning("Starry system prefab is not assigned.");
+        }
     }
 
     // Function to calculate the position of a planet in its orbit based on the radius and angle

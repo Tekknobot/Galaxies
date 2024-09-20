@@ -3,23 +3,22 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     public Transform spacecraft; // Reference to the spacecraft
-    public Vector3 offset = new Vector3(0f, 5f, -10f); // Offset from the spacecraft
+    public Transform anchor; // Public anchor position for the camera
     public float smoothSpeed = 0.125f; // Speed of smoothing the camera movement
 
     private void LateUpdate()
     {
-        if (spacecraft == null)
+        if (spacecraft == null || anchor == null)
         {
-            Debug.LogWarning("Spacecraft reference is missing!");
+            Debug.LogWarning("Spacecraft or anchor reference is missing!");
             return;
         }
 
-        // Desired position of the camera
-        Vector3 desiredPosition = spacecraft.position + spacecraft.TransformDirection(offset);
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-        transform.position = smoothedPosition;
+        // Set the camera position to the anchor's position
+        transform.position = anchor.position;
 
-        // Make the camera follow the rotation of the spacecraft
-        transform.rotation = Quaternion.Slerp(transform.rotation, spacecraft.rotation, smoothSpeed);
+        // Smoothly look at the spacecraft
+        Quaternion desiredRotation = Quaternion.LookRotation(spacecraft.position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, smoothSpeed);
     }
 }

@@ -261,6 +261,7 @@ public class ArcadePlaneController : MonoBehaviour
 
     private void OnRestart(InputAction.CallbackContext context)
     {
+        ConnectionManager.Instance.ResetPlanets(); // Reset planets before reloading
         // Reload the current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

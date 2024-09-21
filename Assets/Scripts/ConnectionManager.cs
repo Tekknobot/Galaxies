@@ -9,7 +9,6 @@ public class ConnectionManager : MonoBehaviour
     public HashSet<Transform> changedPlanets = new HashSet<Transform>(); // Made public
     public int totalPlanets; // Made public
 
-    // Public attributes for pulsing line
     public float minWidth = 10f; // Minimum width
     public float maxWidth = 100f; // Maximum width
     public float pulseSpeed = 1f; // Speed of the pulsing effect
@@ -36,7 +35,6 @@ public class ConnectionManager : MonoBehaviour
 
     private void UpdateTotalPlanets()
     {
-        // Count total planets at every update
         int currentPlanetCount = GameObject.FindGameObjectsWithTag("Planet").Length;
         if (currentPlanetCount != totalPlanets)
         {
@@ -44,7 +42,6 @@ public class ConnectionManager : MonoBehaviour
             Debug.Log($"Total Planets Updated: {totalPlanets}");
         }
 
-        // Check if all planets have changed color
         if (changedPlanets.Count == totalPlanets && totalPlanets > 0)
         {
             CreatePulsingLine();
@@ -64,16 +61,23 @@ public class ConnectionManager : MonoBehaviour
         return changedPlanets.Count;
     }
 
+    public void ResetPlanets()
+    {
+        changedPlanets.Clear();
+        totalPlanets = 0; // Reset total planets
+        Debug.Log("Planets reset on restart.");
+    }
+
     private void CreatePulsingLine()
     {
         GameObject lineObject = new GameObject("PulsingLine");
         LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
 
-        lineRenderer.startWidth = minWidth; // Use public minWidth
-        lineRenderer.endWidth = maxWidth; // Use public maxWidth
+        lineRenderer.startWidth = minWidth;
+        lineRenderer.endWidth = maxWidth;
         lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, Vector3.zero); // Start at the center of the system
-        lineRenderer.SetPosition(1, Vector3.up * 100000); // End upwards to infinity
+        lineRenderer.SetPosition(0, Vector3.zero);
+        lineRenderer.SetPosition(1, Vector3.up * 100000);
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.startColor = GetRandomNeonColor();
         lineRenderer.endColor = lineRenderer.startColor;
@@ -111,14 +115,12 @@ public class ConnectionManager : MonoBehaviour
     {
         while (true)
         {
-            // Pulse the color
             Color originalColor = lineRenderer.startColor;
             float pulse = Mathf.PingPong(Time.time * pulseSpeed, 1f);
             Color pulsedColor = new Color(originalColor.r, originalColor.g, originalColor.b, pulse);
             lineRenderer.startColor = pulsedColor;
             lineRenderer.endColor = pulsedColor;
 
-            // Pulse the width
             float pulsedWidth = Mathf.Lerp(minWidth, maxWidth, pulse);
             lineRenderer.startWidth = pulsedWidth;
             lineRenderer.endWidth = pulsedWidth;

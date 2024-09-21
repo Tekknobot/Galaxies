@@ -103,6 +103,7 @@ public class ArcadePlaneController : MonoBehaviour
         if (isLookingAtCenter)
         {
             LookAtCenter(); // Rotate towards the center if triggered
+            SmoothStop();
         }
         else
         {

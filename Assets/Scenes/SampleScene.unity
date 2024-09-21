@@ -5060,7 +5060,7 @@ MonoBehaviour:
   pitchSensitivity: 10
   yawSensitivity: 10
   smoothStopRate: 3
-  lookAtCenterSpeed: 3
+  lookAtCenterSpeed: 5
   dashForceMultiplier: 20
   dashDuration: 1
   dashCooldown: 1
@@ -5125,7 +5125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactionDistance: 1000
   lineWidth: 25
-  lineMaterial: {fileID: 2100000, guid: adcd34b7736134e3797eef84646c365c, type: 2}
+  lineMaterial: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   curveHeight: 0
 --- !u!1 &586980087
 GameObject:
@@ -10144,6 +10144,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 488757202}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &915185908
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 915185910}
+  - component: {fileID: 915185909}
+  m_Layer: 0
+  m_Name: ConnectionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &915185909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915185908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b64363a4b854ee2bb7510d6848fad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalPlanets: 0
+  minWidth: 10
+  maxWidth: 100
+  pulseSpeed: 50
+--- !u!4 &915185910
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915185908}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10.015135, y: -0.016357774, z: 0.0021563007}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &939302583
 GameObject:
   m_ObjectHideFlags: 0
@@ -10175,9 +10223,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfPlanets: 21
   orbitCount: 13
-  sunPrefab: {fileID: 0}
-  planetPrefab: {fileID: 0}
-  starrySystemPrefab: {fileID: 8807928229710199609, guid: ac288ae2c96474959af0a34537afcf28, type: 3}
+  sunPrefab: {fileID: 4316903151858087890, guid: 9627b76c5314744289ed1509514d0fed, type: 3}
+  planetPrefab: {fileID: 6499254624948773738, guid: 0bb19070ebac949939ff90d72898066c, type: 3}
+  starrySystemPrefab: {fileID: 0}
   orbitMaterial: {fileID: 2100000, guid: adcd34b7736134e3797eef84646c365c, type: 2}
   planetMaterials:
   - {fileID: 2100000, guid: f0c23ef5bd46846b492ee6f18cb7bea3, type: 2}
@@ -20176,3 +20224,4 @@ SceneRoots:
   - {fileID: 480365444}
   - {fileID: 2128860488}
   - {fileID: 1597396560}
+  - {fileID: 915185910}

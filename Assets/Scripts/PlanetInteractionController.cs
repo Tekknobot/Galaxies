@@ -95,13 +95,18 @@ public class PlanetInteractionController : MonoBehaviour
         // Choose a random neon color from the predefined list for the planet
         Color neonColor = neonColors[Random.Range(0, neonColors.Length)];
 
-        // Change the planet color
+        // Change the color of the planet being interacted with
         StartCoroutine(ChangePlanetColor(planet, neonColor));
 
-        // Create a line renderer to connect to the nearest planet
+        // Register the planet with the ConnectionManager
+        ConnectionManager.Instance.RegisterChangedPlanet(planet);
+
+        // Find the nearest planet and change its color too
         Transform nearestPlanet = FindNearestPlanet(planet);
         if (nearestPlanet != null)
         {
+            StartCoroutine(ChangePlanetColor(nearestPlanet, neonColor)); // Change nearest planet's color
+            ConnectionManager.Instance.RegisterChangedPlanet(nearestPlanet); // Register nearest planet as well
             currentLineRenderer = CreateCurvedLine(planet.position, nearestPlanet.position, neonColor);
         }
     }

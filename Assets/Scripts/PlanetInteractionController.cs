@@ -5,32 +5,34 @@ using System.Collections;
 public class PlanetInteractionController : MonoBehaviour
 {
     public float interactionDistance = 1000f; // Distance at which interaction is allowed
-    public float fadeDuration = 1f; // Duration for color fade-in effect
+    public float lineWidth = 0.1f; // Width of the LineRenderer
+    public Material lineMaterial; // Material for the LineRenderer
+    public float curveHeight = 5f; // Height of the curve
 
     private Transform closestPlanet;
-    private Color targetColor;
+    private LineRenderer currentLineRenderer;
 
     // Extended list of neon colors for vibrant interactions
     private Color[] neonColors = new Color[]
     {
-        Color.red,                   // Red
-        Color.green,                 // Green
-        new Color(1f, 0f, 1f),       // Magenta
-        new Color(1f, 0.647f, 0f),   // Orange
-        new Color(1f, 0.75f, 0.8f),  // Pink
-        Color.cyan,                  // Cyan
-        Color.yellow,                // Yellow
-        new Color(0.5f, 0f, 1f),     // Neon Purple
-        new Color(0.75f, 1f, 0f),    // Neon Lime
-        new Color(1f, 0.5f, 0.31f),  // Neon Coral
-        new Color(0.2f, 1f, 0.8f),   // Neon Aqua
-        new Color(0f, 1f, 0.5f),     // Neon Mint
-        new Color(1f, 0.36f, 0.36f), // Neon Salmon
-        new Color(0f, 0.78f, 1f),    // Neon Sky Blue
-        new Color(0.94f, 0f, 0.54f), // Neon Hot Pink
-        new Color(1f, 1f, 0.2f),     // Neon Lemon
-        new Color(0.4f, 0.8f, 1f),   // Neon Light Blue
-        new Color(0.9f, 0.1f, 0.2f)  // Neon Crimson
+        Color.red,
+        Color.green,
+        new Color(1f, 0f, 1f),
+        new Color(1f, 0.647f, 0f),
+        new Color(1f, 0.75f, 0.8f),
+        Color.cyan,
+        Color.yellow,
+        new Color(0.5f, 0f, 1f),
+        new Color(0.75f, 1f, 0f),
+        new Color(1f, 0.5f, 0.31f),
+        new Color(0.2f, 1f, 0.8f),
+        new Color(0f, 1f, 0.5f),
+        new Color(1f, 0.36f, 0.36f),
+        new Color(0f, 0.78f, 1f),
+        new Color(0.94f, 0f, 0.54f),
+        new Color(1f, 1f, 0.2f),
+        new Color(0.4f, 0.8f, 1f),
+        new Color(0.9f, 0.1f, 0.2f)
     };
 
     void Update()
@@ -47,9 +49,15 @@ public class PlanetInteractionController : MonoBehaviour
                 // Check for gamepad South button press to trigger interaction
                 if (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame)
                 {
-                    StartCoroutine(InteractWithPlanet(closestPlanet));
+                    InteractWithPlanet(closestPlanet);
                 }
             }
+        }
+
+        // Update line color if it's active
+        if (currentLineRenderer != null && currentLineRenderer.enabled)
+        {
+            UpdateLineColor(currentLineRenderer);
         }
     }
 
@@ -82,18 +90,91 @@ public class PlanetInteractionController : MonoBehaviour
         closestPlanet = nearestPlanet.transform;
     }
 
-    private IEnumerator InteractWithPlanet(Transform planet)
+    private void InteractWithPlanet(Transform planet)
+    {
+        // Choose a random neon color from the predefined list for the planet
+        Color neonColor = neonColors[Random.Range(0, neonColors.Length)];
+
+        // Change the planet color
+        StartCoroutine(ChangePlanetColor(planet, neonColor));
+
+        // Create a line renderer to connect to the nearest planet
+        Transform nearestPlanet = FindNearestPlanet(planet);
+        if (nearestPlanet != null)
+        {
+            currentLineRenderer = CreateCurvedLine(planet.position, nearestPlanet.position, neonColor);
+        }
+    }
+
+    private Transform FindNearestPlanet(Transform planet)
+    {
+        GameObject[] planets = GameObject.FindGameObjectsWithTag("Planet");
+        Transform nearest = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (GameObject p in planets)
+        {
+            if (p.transform != planet) // Don't consider the planet itself
+            {
+                float distance = Vector3.Distance(planet.position, p.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    nearest = p.transform;
+                }
+            }
+        }
+
+        return nearest;
+    }
+
+    private LineRenderer CreateCurvedLine(Vector3 start, Vector3 end, Color color)
+    {
+        GameObject lineObject = new GameObject("CurvedLine");
+        LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
+
+        lineRenderer.startWidth = lineWidth;
+        lineRenderer.endWidth = lineWidth;
+        lineRenderer.material = lineMaterial;
+        lineRenderer.startColor = color;
+        lineRenderer.endColor = color;
+
+        int segments = 20; // Number of segments for the curve
+        Vector3[] points = new Vector3[segments + 1];
+
+        for (int i = 0; i <= segments; i++)
+        {
+            float t = i / (float)segments;
+            // Quadratic Bezier curve calculation with upward control point
+            Vector3 controlPoint = (start + end) / 2 + Vector3.up * curveHeight;
+            points[i] = Vector3.Lerp(Vector3.Lerp(start, controlPoint, t), Vector3.Lerp(controlPoint, end, t), t);
+        }
+
+        lineRenderer.positionCount = points.Length;
+        lineRenderer.SetPositions(points);
+        lineRenderer.enabled = true; // Enable the line renderer
+
+        return lineRenderer;
+    }
+
+    private void UpdateLineColor(LineRenderer lineRenderer)
+    {
+        // Pulse the line color
+        Color originalColor = lineRenderer.startColor;
+        float pulse = Mathf.PingPong(Time.time, 1f);
+        Color pulsedColor = new Color(originalColor.r, originalColor.g, originalColor.b, pulse);
+        lineRenderer.startColor = pulsedColor;
+        lineRenderer.endColor = pulsedColor;
+    }
+
+    private IEnumerator ChangePlanetColor(Transform planet, Color targetColor)
     {
         Renderer planetRenderer = planet.GetComponent<Renderer>();
         if (planetRenderer != null)
         {
-            // Choose a random neon color from the predefined list
-            Color neonColor = neonColors[Random.Range(0, neonColors.Length)];
-            targetColor = neonColor;
-
-            // Fade in effect
             Color initialColor = planetRenderer.material.color;
             float elapsedTime = 0f;
+            float fadeDuration = 1f;
 
             while (elapsedTime < fadeDuration)
             {

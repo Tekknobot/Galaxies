@@ -122,7 +122,7 @@ public class SolarSystemGenerator : MonoBehaviour
         float moonOrbitSpeed = Random.Range(1f, 3f); // Moon orbit speed
 
         // Calculate a starting position for the moon
-        Vector3 moonStartPosition = planet.transform.position + new Vector3(moonOrbitRadius, 0, 0);
+        Vector3 moonStartPosition = planet.transform.position + new Vector3(moonOrbitRadius, moonOrbitRadius, 0);
 
         GameObject moon = CreateSphere($"Moon_{planet.name}", moonStartPosition, moonScale, moonMaterial);
         moon.tag = "Moon";

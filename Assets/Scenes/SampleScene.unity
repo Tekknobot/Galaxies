@@ -10178,23 +10178,23 @@ MonoBehaviour:
   starrySystemPrefab: {fileID: 8807928229710199609, guid: ac288ae2c96474959af0a34537afcf28, type: 3}
   orbitMaterial: {fileID: 2100000, guid: adcd34b7736134e3797eef84646c365c, type: 2}
   planetMaterials:
+  - {fileID: 2100000, guid: f0c23ef5bd46846b492ee6f18cb7bea3, type: 2}
+  - {fileID: 2100000, guid: 880a2482ba78241d186eb34658b070b6, type: 2}
+  - {fileID: 2100000, guid: a313e2dcc71c34902a72c262775c55a5, type: 2}
   - {fileID: 2100000, guid: 83621335f0c444d55922a46bdcb26cd4, type: 2}
   - {fileID: 2100000, guid: 99095108ff9c444a3a00420172ced9c4, type: 2}
   - {fileID: 2100000, guid: 2903f228196bf44df8d58b54ff8a839f, type: 2}
-  - {fileID: 2100000, guid: e92030d304e6249d1b2c9d17f33430f1, type: 2}
   - {fileID: 2100000, guid: 8629cf03e237249c381d00ab671a5966, type: 2}
   - {fileID: 2100000, guid: 7cf4af5f9c79740c8b9e63a9af666e27, type: 2}
-  - {fileID: 2100000, guid: a313e2dcc71c34902a72c262775c55a5, type: 2}
-  - {fileID: 2100000, guid: 880a2482ba78241d186eb34658b070b6, type: 2}
-  - {fileID: 2100000, guid: f0c23ef5bd46846b492ee6f18cb7bea3, type: 2}
+  moonMaterial: {fileID: 2100000, guid: e92030d304e6249d1b2c9d17f33430f1, type: 2}
   sunShader: {fileID: 2100000, guid: 67d1e4574027e4578b4883c28d925c73, type: 2}
   sunScale: 1597
   planetMinScale: 377
   planetMaxScale: 610
   minDistance: 2584
   maxDistance: 10946
-  minOrbitSpeed: 0.01
-  maxOrbitSpeed: 0.03
+  minOrbitSpeed: 0
+  maxOrbitSpeed: 0
   minSelfRotationSpeed: 5
   maxSelfRotationSpeed: 20
   orbitThickness: 5
@@ -15235,6 +15235,104 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 488757211}
   m_SourcePrefab: {fileID: 100100000, guid: 78eb869a4e581496fa6ce7a5e0813e80, type: 3}
+--- !u!1 &1597396558
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1597396560}
+  - component: {fileID: 1597396559}
+  m_Layer: 0
+  m_Name: GasCloudGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1597396559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597396558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c01bf51d392094760b065deb99dbfd8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gasCloudParticlePrefab: {fileID: 2560698184174401682, guid: ac77bdf1c7a0b441299be81b90dd6088, type: 3}
+  maxCloudsPerPlanet: 1
+  minDistanceFromPlanet: 2
+  maxDistanceFromPlanet: 10
+  numberOfSelectedPlanets: 5
+--- !u!4 &1597396560
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597396558}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2128860486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2128860488}
+  - component: {fileID: 2128860487}
+  m_Layer: 0
+  m_Name: AsteroidFieldGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2128860487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128860486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46d2914db81014a39b596e590290996a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfAsteroids: 400
+  minSize: 5
+  maxSize: 15
+  fieldRadius: 100
+  asteroidMaterial: {fileID: 2100000, guid: 7441cd3ee38f140dfae97570a6c4905d, type: 2}
+--- !u!4 &2128860488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128860486}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &7388690180069466819
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -20074,3 +20172,5 @@ SceneRoots:
   - {fileID: 1489428551}
   - {fileID: 1256574640}
   - {fileID: 480365444}
+  - {fileID: 2128860488}
+  - {fileID: 1597396560}

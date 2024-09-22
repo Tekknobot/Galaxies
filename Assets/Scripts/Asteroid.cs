@@ -70,6 +70,13 @@ public class Asteroid : MonoBehaviour
         {
             hasCollided = true; // Set the flag to true to prevent further collisions
 
+            // Turn off the mesh renderer
+            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+            if (meshRenderer != null)
+            {
+                meshRenderer.enabled = false; // Disable the mesh renderer
+            }
+
             // Fragmentation logic
             for (int i = 0; i < fragmentCount; i++)
             {

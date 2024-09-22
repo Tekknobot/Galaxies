@@ -29,11 +29,12 @@ public class SolarSystemGenerator : MonoBehaviour
 
     private List<string> planetNames = new List<string>
     {
-        "Astra", "Zephira", "Orion", "Nova", "Aurora", "Helios", "Lunaris", "Vega", "Nebula", "Stellaris",
-        "Celestia", "Cosmos", "Solis", "Equinox", "Zodiac", "Draco", "Galaxa", "Phaeton", "Hyperion", "Triton",
-        "Cronus", "Icarus", "Phoebe", "Thanatos", "Arcturus", "Sirius", "Titan", "Mira", "Andromeda", "Rigel",
-        "Altair", "Castor", "Pollux", "Lyra", "Sphinx", "Electra", "Gaia", "Janus", "Nyx", "Cygnus",
-        "Hercules", "Pegasus", "Callisto", "Europa", "Ganymede", "Io", "Perseus", "Cepheus", "Hydra", "Scorpius"
+        "Aria", "Selene", "Orionis", "Zenith", "Elysium", "Astraea", "Lyraxis", "Nebulon", "Celestria", 
+        "Solara", "Nyxia", "Titania", "Vespera", "Ceres", "Thalassa", "Eridani", "Tethys", "Phobos", 
+        "Deimos", "Calypso", "Altamira", "Fulgora", "Heliosphere", "Aurelia", "Enceladus", "Theros", 
+        "Quasar", "Vortice", "Caelum", "Kallisto", "Arcadia", "Myriad", "Titanos", "Lyricum", 
+        "Astraeus", "Perihelion", "Aether", "Solaris", "Mirabilis", "Charon", "Antheia", "Delphinia", 
+        "Adastra", "Alcyone", "Orpheus", "Calyptra", "Vesper", "Ephemeris", "Halcyon", "Zephyra"
     };
 
     private List<string> planetResources = new List<string>
@@ -96,7 +97,22 @@ public class SolarSystemGenerator : MonoBehaviour
         "The rise of an influential political figure on this planet shifted the balance of power in the galaxy.",
         "Its inhabitants have a rich oral tradition, passing down stories of bravery and wisdom through generations.",
         "A deep-space anomaly near the planet revealed unexpected phenomena that changed scientific understanding.",
-        // Add more histories as needed...
+        "This planet was once covered in lush jungles, now replaced by sprawling cities after rapid industrialization.",
+        "An ancient portal found here connects to other dimensions, drawing scholars and adventurers alike.",
+        "The planet's ice caps hold secrets of a long-lost civilization frozen in time.",
+        "A great migration of its inhabitants led to the establishment of colonies on distant worlds.",
+        "This planet’s atmosphere is filled with bioluminescent organisms, creating breathtaking night skies.",
+        "Once a major center for interstellar trade, it now struggles with economic decline.",
+        "A devastating plague swept through, forever altering the social structure of its society.",
+        "The discovery of alien ruins has sparked intense archaeological interest and exploration.",
+        "A powerful psychic being was born here, influencing the fate of countless worlds.",
+        "The planet's unique gravitational anomalies have puzzled scientists for generations.",
+        "Once a barren wasteland, a massive irrigation project turned it into a thriving agricultural hub.",
+        "A cultural renaissance flourished here, producing masterpieces in art, music, and literature.",
+        "The planet served as a neutral ground for historic peace talks between rival factions.",
+        "A rogue AI once dominated the planet, now a cautionary tale of technological excess.",
+        "Mythical creatures said to inhabit the forests have inspired countless legends and stories.",
+        "A mysterious energy source found deep within its core powers entire star systems."
     };
 
     private List<Vector3> planetPositions = new List<Vector3>();
@@ -154,7 +170,7 @@ public class SolarSystemGenerator : MonoBehaviour
 
             // Initialize the Planet component
             Planet planetComponent = planet.AddComponent<Planet>();
-            planetComponent.Initialize(planetNames[i % planetNames.Count], planetResources[i % planetResources.Count], planetHistories[i % planetHistories.Count]);
+            planetComponent.Initialize(planetNames[Random.Range(0, planetNames.Count)], planetResources[Random.Range(0, planetResources.Count)], planetHistories[Random.Range(0, planetHistories.Count)]);
 
             Orbit orbit = planet.AddComponent<Orbit>();
             orbit.sun = GameObject.FindWithTag("Sun").transform;

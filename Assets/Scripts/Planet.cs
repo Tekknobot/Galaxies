@@ -3,14 +3,14 @@ using UnityEngine;
 public class Planet : MonoBehaviour
 {
     private string planetName;
-    private float planetScale;
     private string planetResources;
+    private string planetHistory; // New field for history
 
-    public void Initialize(string name, float scale, string resource)
+    public void Initialize(string name, string resource, string history)
     {
         planetName = name;
-        planetScale = scale;
         planetResources = resource;
+        planetHistory = history; // Initialize history
         gameObject.name = planetName;
     }
 
@@ -19,6 +19,13 @@ public class Planet : MonoBehaviour
         return planetResources;
     }
 
-    // Additional methods...
-}
+    public string GetName()
+    {
+        return planetName;
+    }
 
+    public string GetHistory() // New method to get history
+    {
+        return planetHistory;
+    }
+}

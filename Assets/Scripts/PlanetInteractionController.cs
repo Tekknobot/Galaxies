@@ -14,6 +14,7 @@ public class PlanetInteractionController : MonoBehaviour
     private LineRenderer currentLineRenderer;
     public TMP_Text planetNameText; // Reference to the TMP Text component for the name
     public TMP_Text planetBioText; // Reference to the TMP Text component for the bio
+    public TMP_Text planetHistoryText; // Reference to the TMP Text component for the history
 
     private Color[] neonColors = new Color[]
     {
@@ -36,6 +37,7 @@ public class PlanetInteractionController : MonoBehaviour
             {
                 ShowPlanetName(closestPlanet);
                 ShowPlanetBio(closestPlanet);
+                ShowPlanetHistory(closestPlanet);
 
                 if (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame)
                 {
@@ -46,12 +48,14 @@ public class PlanetInteractionController : MonoBehaviour
             {
                 HidePlanetName();
                 HidePlanetBio();
+                HidePlanetHistory();
             }
         }
         else
         {
             HidePlanetName();
             HidePlanetBio();
+            HidePlanetHistory();
         }
 
         if (currentLineRenderer != null && currentLineRenderer.enabled)
@@ -64,7 +68,7 @@ public class PlanetInteractionController : MonoBehaviour
     {
         if (planetNameText != null)
         {
-            planetNameText.text = planet.GetComponent<Planet>().name; // Assuming you have a Planet component with a name
+            planetNameText.text = planet.GetComponent<Planet>().GetName(); // Assuming you have a Planet component with a name
             planetNameText.gameObject.SetActive(true);
         }
     }
@@ -92,6 +96,24 @@ public class PlanetInteractionController : MonoBehaviour
         if (planetBioText != null)
         {
             planetBioText.gameObject.SetActive(false);
+        }
+    }
+
+    private void ShowPlanetHistory(Transform planet)
+    {
+        if (planetHistoryText != null)
+        {
+            Planet planetComponent = planet.GetComponent<Planet>();
+            planetHistoryText.text = planetComponent != null ? planetComponent.GetHistory() : "No History Available";
+            planetHistoryText.gameObject.SetActive(true);
+        }
+    }
+
+    private void HidePlanetHistory()
+    {
+        if (planetHistoryText != null)
+        {
+            planetHistoryText.gameObject.SetActive(false);
         }
     }
 

@@ -60,6 +60,31 @@ public class SolarSystemGenerator : MonoBehaviour
         // Add more resources as needed...
     };
 
+    private List<string> planetHistories = new List<string>
+    {
+        "Once a thriving world, it faced devastation from a massive asteroid impact, reshaping its landscape.",
+        "This planet was the site of an ancient civilization known for its advanced technology and intricate art.",
+        "A long-standing conflict between its two major factions led to a century of war, now a peaceful land.",
+        "Discovered by explorers centuries ago, it became a hub for trade due to its rich resources.",
+        "A mysterious event in its past caused its oceans to evaporate, leaving vast deserts behind.",
+        "Once inhabited by giant creatures, it now stands as a monument to their extinction.",
+        "A great scientific discovery was made here, leading to advancements in space travel.",
+        "This planet is known for its legendary storm, which has raged for millennia, influencing its weather patterns.",
+        "A significant political alliance formed here has shaped interstellar relations for generations.",
+        "In its early history, the planet was a barren wasteland, transformed into a lush paradise through terraforming efforts.",
+        "The remnants of a colossal space station still orbit this planet, a relic of its once-dominant spacefaring civilization.",
+        "It was once thought to be uninhabitable, but underground ecosystems were discovered, thriving in isolation.",
+        "The planet hosted a galactic summit that led to a groundbreaking peace treaty between rival factions.",
+        "An ancient prophecy foretold the rise of a great leader born on this planet, changing its fate forever.",
+        "The discovery of a rare mineral led to a gold rush, sparking an economic boom that lasted decades.",
+        "This planet was the first to establish a university of interstellar knowledge, attracting scholars from across the galaxy.",
+        "Its unique biosphere has made it a key location for scientific research on alien life forms.",
+        "The planet's rich folklore and myths have shaped its culture, celebrating heroes and legendary figures.",
+        "A catastrophic event, known as the Great Collapse, drastically altered its terrain and climate.",
+        "The last known dragon-like creatures were sighted here, inspiring countless tales of adventure.",
+        // Add more histories as needed...
+    };
+
     private List<Vector3> planetPositions = new List<Vector3>();
     public TextMeshProUGUI planetBioText; // Reference to the UI Text for bios
 
@@ -115,7 +140,7 @@ public class SolarSystemGenerator : MonoBehaviour
 
             // Initialize the Planet component
             Planet planetComponent = planet.AddComponent<Planet>();
-            planetComponent.Initialize(planetNames[i % planetNames.Count], planetScale, planetResources[i % planetResources.Count]);
+            planetComponent.Initialize(planetNames[i % planetNames.Count], planetResources[i % planetResources.Count], planetHistories[i % planetHistories.Count]);
 
             Orbit orbit = planet.AddComponent<Orbit>();
             orbit.sun = GameObject.FindWithTag("Sun").transform;

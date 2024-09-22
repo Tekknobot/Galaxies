@@ -7,11 +7,19 @@ public class AsteroidFieldGenerator : MonoBehaviour
     public float minSize = 0.1f; // Minimum size of asteroids
     public float maxSize = 1.0f; // Maximum size of asteroids
     public float fieldRadius = 50.0f; // Radius of the asteroid field
+    public float solarSystemBoundary = 100.0f; // Boundary of the solar system
     public Material asteroidMaterial; // Material for the asteroids
+
+    private List<GameObject> asteroids = new List<GameObject>(); // List to keep track of asteroids
 
     void Start()
     {
         GenerateAsteroidField();
+    }
+
+    void Update()
+    {
+        CheckAsteroidBoundaries();
     }
 
     void GenerateAsteroidField()
@@ -44,6 +52,21 @@ public class AsteroidFieldGenerator : MonoBehaviour
         if (renderer != null && asteroidMaterial != null)
         {
             renderer.material = asteroidMaterial;
+        }
+
+        // Add asteroid to the list
+        asteroids.Add(asteroid);
+    }
+
+    void CheckAsteroidBoundaries()
+    {
+        for (int i = asteroids.Count - 1; i >= 0; i--)
+        {
+            if (Vector3.Distance(Vector3.zero, asteroids[i].transform.position) > solarSystemBoundary)
+            {
+                Destroy(asteroids[i]);
+                asteroids.RemoveAt(i);
+            }
         }
     }
 }

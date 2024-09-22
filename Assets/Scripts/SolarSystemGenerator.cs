@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using TMPro; // Include for TextMeshPro
 
 public class SolarSystemGenerator : MonoBehaviour
 {
@@ -8,12 +9,11 @@ public class SolarSystemGenerator : MonoBehaviour
     public int orbitCount = 5;
     public GameObject sunPrefab;
     public GameObject planetPrefab;
-    public GameObject starrySystemPrefab;
     public Material orbitMaterial;
     public Material[] planetMaterials;
     public Material moonMaterial; // Material for the moons
     public Material sunShader;
-
+    
     public float sunScale = 2.0f;
     public float planetMinScale = 0.2f;
     public float planetMaxScale = 1.0f;
@@ -36,7 +36,32 @@ public class SolarSystemGenerator : MonoBehaviour
         "Hercules", "Pegasus", "Callisto", "Europa", "Ganymede", "Io", "Perseus", "Cepheus", "Hydra", "Scorpius"
     };
 
+    private List<string> planetResources = new List<string>
+    {
+        "Crystalline minerals that enhance energy absorption.",
+        "Toxic gases that can be processed into powerful explosives.",
+        "Rare flora that can be used for advanced medicinal compounds.",
+        "Iron-rich dust that can be refined into super alloys.",
+        "Gaseous compounds ideal for fuel and energy production.",
+        "Ice deposits containing water that can sustain life.",
+        "Liquid crystals that enhance technology and create energy shields.",
+        "Metals with unique properties used in advanced technology.",
+        "Silicate-rich soil that can be transformed into nutrient sources.",
+        "Magnetic ore used for crafting advanced navigation devices.",
+        "Luminous minerals that power energy-based weapons.",
+        "Gems with the ability to store and release energy.",
+        "Fossilized organisms that yield potent biofuel.",
+        "Nanoparticles found in dust storms that can be harvested for tech.",
+        "Aetheric particles that enhance magical abilities.",
+        "Hyperconductive fibers used in advanced communication systems.",
+        "Volcanic glass used to create cutting-edge weaponry.",
+        "Liquid metal that can be molded into any shape.",
+        "Bio-luminescent algae used for lighting and energy.",
+        // Add more resources as needed...
+    };
+
     private List<Vector3> planetPositions = new List<Vector3>();
+    public TextMeshProUGUI planetBioText; // Reference to the UI Text for bios
 
     void Start()
     {
@@ -63,9 +88,6 @@ public class SolarSystemGenerator : MonoBehaviour
         sunLight.intensity = 1.5f;
         sunLight.color = new Color(1f, 0.95f, 0.8f);
         sunLight.shadows = LightShadows.Soft;
-
-        // Instantiate starry system at the sun's position
-        InstantiateStarrySystem(sun.transform.position);
     }
 
     void GeneratePlanets()
@@ -91,6 +113,10 @@ public class SolarSystemGenerator : MonoBehaviour
             GameObject planet = CreateSphere($"Planet_{i + 1}", startPosition, planetScale, GetRandomPlanetMaterial());
             planet.tag = "Planet";
 
+            // Initialize the Planet component
+            Planet planetComponent = planet.AddComponent<Planet>();
+            planetComponent.Initialize(planetNames[i % planetNames.Count], planetScale, planetResources[i % planetResources.Count]);
+
             Orbit orbit = planet.AddComponent<Orbit>();
             orbit.sun = GameObject.FindWithTag("Sun").transform;
             orbit.orbitSpeed = orbitSpeed;
@@ -100,18 +126,6 @@ public class SolarSystemGenerator : MonoBehaviour
             rotateSelf.rotationSpeed = Random.Range(minSelfRotationSpeed, maxSelfRotationSpeed);
 
             CreateOrbitPath(orbitRadius);
-            planet.name = planetNames[i % planetNames.Count];
-
-            Planets.Add(planet);
-            planetPositions.Add(startPosition);
-
-            // Randomly assign moons to larger planets
-            if (Random.value < 0.5f) // 50% chance to have a moon
-            {
-                CreateMoon(planet, planetScale);
-            }
-
-            InstantiateStarrySystem(planet.transform.position);
         }
     }
 
@@ -166,18 +180,6 @@ public class SolarSystemGenerator : MonoBehaviour
         renderer.material = material;
 
         return sphere;
-    }
-
-    void InstantiateStarrySystem(Vector3 position)
-    {
-        if (starrySystemPrefab != null)
-        {
-            Instantiate(starrySystemPrefab, position, Quaternion.identity);
-        }
-        else
-        {
-            Debug.LogWarning("Starry system prefab is not assigned.");
-        }
     }
 
     Vector3 CalculateOrbitPosition(float radius, float angleDegrees)

@@ -1,69 +1,102 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 using System.Collections;
 
 public class PlanetInteractionController : MonoBehaviour
 {
-    public float interactionDistance = 1000f; // Distance at which interaction is allowed
-    public float lineWidth = 0.1f; // Width of the LineRenderer
-    public Material lineMaterial; // Material for the LineRenderer
-    public float curveHeight = 5f; // Height of the curve
+    public float interactionDistance = 1000f;
+    public float lineWidth = 0.1f;
+    public Material lineMaterial;
+    public float curveHeight = 5f;
 
     private Transform closestPlanet;
     private LineRenderer currentLineRenderer;
+    public TMP_Text planetNameText; // Reference to the TMP Text component for the name
+    public TMP_Text planetBioText; // Reference to the TMP Text component for the bio
 
-    // Extended list of neon colors for vibrant interactions
     private Color[] neonColors = new Color[]
     {
-        Color.red,
-        Color.green,
-        new Color(1f, 0f, 1f),
-        new Color(1f, 0.647f, 0f),
-        new Color(1f, 0.75f, 0.8f),
-        Color.cyan,
-        Color.yellow,
-        new Color(0.5f, 0f, 1f),
-        new Color(0.75f, 1f, 0f),
-        new Color(1f, 0.5f, 0.31f),
-        new Color(0.2f, 1f, 0.8f),
-        new Color(0f, 1f, 0.5f),
-        new Color(1f, 0.36f, 0.36f),
-        new Color(0f, 0.78f, 1f),
-        new Color(0.94f, 0f, 0.54f),
-        new Color(1f, 1f, 0.2f),
-        new Color(0.4f, 0.8f, 1f),
+        Color.red, Color.green, new Color(1f, 0f, 1f), new Color(1f, 0.647f, 0f),
+        new Color(1f, 0.75f, 0.8f), Color.cyan, Color.yellow, new Color(0.5f, 0f, 1f),
+        new Color(0.75f, 1f, 0f), new Color(1f, 0.5f, 0.31f), new Color(0.2f, 1f, 0.8f),
+        new Color(0f, 1f, 0.5f), new Color(1f, 0.36f, 0.36f), new Color(0f, 0.78f, 1f),
+        new Color(0.94f, 0f, 0.54f), new Color(1f, 1f, 0.2f), new Color(0.4f, 0.8f, 1f),
         new Color(0.9f, 0.1f, 0.2f)
     };
 
     void Update()
     {
-        // Find the closest planet
         FindClosestPlanet();
 
         if (closestPlanet != null)
         {
-            // Check if the distance to the closest planet is within the interaction distance
             float distanceToPlanet = Vector3.Distance(transform.position, closestPlanet.position);
             if (distanceToPlanet < interactionDistance)
             {
-                // Check for gamepad South button press to trigger interaction
+                ShowPlanetName(closestPlanet);
+                ShowPlanetBio(closestPlanet);
+
                 if (Gamepad.current != null && Gamepad.current.aButton.wasPressedThisFrame)
                 {
                     InteractWithPlanet(closestPlanet);
                 }
             }
+            else
+            {
+                HidePlanetName();
+                HidePlanetBio();
+            }
+        }
+        else
+        {
+            HidePlanetName();
+            HidePlanetBio();
         }
 
-        // Update line color if it's active
         if (currentLineRenderer != null && currentLineRenderer.enabled)
         {
             UpdateLineColor(currentLineRenderer);
         }
     }
 
+    private void ShowPlanetName(Transform planet)
+    {
+        if (planetNameText != null)
+        {
+            planetNameText.text = planet.GetComponent<Planet>().name; // Assuming you have a Planet component with a name
+            planetNameText.gameObject.SetActive(true);
+        }
+    }
+
+    private void HidePlanetName()
+    {
+        if (planetNameText != null)
+        {
+            planetNameText.gameObject.SetActive(false);
+        }
+    }
+
+    private void ShowPlanetBio(Transform planet)
+    {
+        if (planetBioText != null)
+        {
+            Planet planetComponent = planet.GetComponent<Planet>();
+            planetBioText.text = planetComponent != null ? planetComponent.GetResource() : "No Bio Available";
+            planetBioText.gameObject.SetActive(true);
+        }
+    }
+
+    private void HidePlanetBio()
+    {
+        if (planetBioText != null)
+        {
+            planetBioText.gameObject.SetActive(false);
+        }
+    }
+
     private void FindClosestPlanet()
     {
-        // Find all objects with the "Planet" tag
         GameObject[] planets = GameObject.FindGameObjectsWithTag("Planet");
         if (planets.Length == 0)
         {
@@ -71,11 +104,9 @@ public class PlanetInteractionController : MonoBehaviour
             return;
         }
 
-        // Initialize the closest planet
         GameObject nearestPlanet = planets[0];
         float closestDistance = Vector3.Distance(transform.position, nearestPlanet.transform.position);
 
-        // Iterate through all planets to find the closest one
         foreach (GameObject planet in planets)
         {
             float distance = Vector3.Distance(transform.position, planet.transform.position);
@@ -86,27 +117,20 @@ public class PlanetInteractionController : MonoBehaviour
             }
         }
 
-        // Set the closest planet
         closestPlanet = nearestPlanet.transform;
     }
 
     private void InteractWithPlanet(Transform planet)
     {
-        // Choose a random neon color from the predefined list for the planet
         Color neonColor = neonColors[Random.Range(0, neonColors.Length)];
-
-        // Change the color of the planet being interacted with
         StartCoroutine(ChangePlanetColor(planet, neonColor));
-
-        // Register the planet with the ConnectionManager
         ConnectionManager.Instance.RegisterChangedPlanet(planet);
 
-        // Find the nearest planet and change its color too
         Transform nearestPlanet = FindNearestPlanet(planet);
         if (nearestPlanet != null)
         {
-            StartCoroutine(ChangePlanetColor(nearestPlanet, neonColor)); // Change nearest planet's color
-            ConnectionManager.Instance.RegisterChangedPlanet(nearestPlanet); // Register nearest planet as well
+            StartCoroutine(ChangePlanetColor(nearestPlanet, neonColor));
+            ConnectionManager.Instance.RegisterChangedPlanet(nearestPlanet);
             currentLineRenderer = CreateCurvedLine(planet.position, nearestPlanet.position, neonColor);
         }
     }
@@ -119,7 +143,7 @@ public class PlanetInteractionController : MonoBehaviour
 
         foreach (GameObject p in planets)
         {
-            if (p.transform != planet) // Don't consider the planet itself
+            if (p.transform != planet)
             {
                 float distance = Vector3.Distance(planet.position, p.transform.position);
                 if (distance < closestDistance)
@@ -144,32 +168,29 @@ public class PlanetInteractionController : MonoBehaviour
         lineRenderer.startColor = color;
         lineRenderer.endColor = color;
 
-        int segments = 20; // Number of segments for the curve
+        int segments = 20;
         Vector3[] points = new Vector3[segments + 1];
 
         for (int i = 0; i <= segments; i++)
         {
             float t = i / (float)segments;
-            // Quadratic Bezier curve calculation with upward control point
             Vector3 controlPoint = (start + end) / 2 + Vector3.up * curveHeight;
             points[i] = Vector3.Lerp(Vector3.Lerp(start, controlPoint, t), Vector3.Lerp(controlPoint, end, t), t);
         }
 
         lineRenderer.positionCount = points.Length;
         lineRenderer.SetPositions(points);
-        lineRenderer.enabled = true; // Enable the line renderer
+        lineRenderer.enabled = true;
 
         return lineRenderer;
     }
 
     private void UpdateLineColor(LineRenderer lineRenderer)
     {
-        // Pulse the line color
         Color originalColor = lineRenderer.startColor;
         float pulse = Mathf.PingPong(Time.time, 1f);
-        Color pulsedColor = new Color(originalColor.r, originalColor.g, originalColor.b, pulse);
-        lineRenderer.startColor = pulsedColor;
-        lineRenderer.endColor = pulsedColor;
+        lineRenderer.startColor = new Color(originalColor.r, originalColor.g, originalColor.b, pulse);
+        lineRenderer.endColor = lineRenderer.startColor;
     }
 
     private IEnumerator ChangePlanetColor(Transform planet, Color targetColor)
@@ -187,7 +208,7 @@ public class PlanetInteractionController : MonoBehaviour
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
-            planetRenderer.material.color = targetColor; // Ensure final color is set
+            planetRenderer.material.color = targetColor;
         }
     }
 }

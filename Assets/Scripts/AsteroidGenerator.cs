@@ -16,6 +16,10 @@ public class AsteroidGenerator : MonoBehaviour
     public Material trailMaterial; // Material for the trail renderer
     public float fadeDuration = 1f; // Duration of the fade effect before destruction
 
+    // Public thickness for the TrailRenderer
+    public float trailStartWidth = 0.5f; // Starting width of the trail
+    public float trailEndWidth = 0.3f; // Ending width of the trail
+
     private List<GameObject> planets = new List<GameObject>();
 
     void Start()
@@ -75,8 +79,8 @@ public class AsteroidGenerator : MonoBehaviour
             TrailRenderer trailRenderer = asteroid.AddComponent<TrailRenderer>();
             trailRenderer.material = trailMaterial;
             trailRenderer.time = 2f; // Increase the time the trail lasts
-            trailRenderer.startWidth = 0.5f; // Increase starting width of the trail
-            trailRenderer.endWidth = 0.3f; // Increase ending width of the trail
+            trailRenderer.startWidth = trailStartWidth; // Use public thickness for the start
+            trailRenderer.endWidth = trailEndWidth; // Use public thickness for the end
 
             // Create a color gradient for the trail
             Gradient gradient = new Gradient();

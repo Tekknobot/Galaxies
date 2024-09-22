@@ -172,6 +172,9 @@ public class SolarSystemGenerator : MonoBehaviour
             Planet planetComponent = planet.AddComponent<Planet>();
             planetComponent.Initialize(planetNames[Random.Range(0, planetNames.Count)], planetResources[Random.Range(0, planetResources.Count)], planetHistories[Random.Range(0, planetHistories.Count)]);
 
+            // Create a moon for the planet
+            CreateMoon(planet, planetScale);
+            
             Orbit orbit = planet.AddComponent<Orbit>();
             orbit.sun = GameObject.FindWithTag("Sun").transform;
             orbit.orbitSpeed = orbitSpeed;

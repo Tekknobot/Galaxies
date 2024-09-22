@@ -1,86 +1,41 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Planet : MonoBehaviour
 {
     private string planetName;
     private string planetResources;
-    private string planetHistory; // New field for history
+    private string planetHistory;
 
-    private List<string> planetHistories = new List<string>
+    private void OnCollisionEnter(Collision collision)
     {
-        "Once a thriving world, it faced devastation from a massive asteroid impact, reshaping its landscape.",
-        "This planet was the site of an ancient civilization known for its advanced technology and intricate art.",
-        "A long-standing conflict between its two major factions led to a century of war, now a peaceful land.",
-        "Discovered by explorers centuries ago, it became a hub for trade due to its rich resources.",
-        "A mysterious event in its past caused its oceans to evaporate, leaving vast deserts behind.",
-        "Once inhabited by giant creatures, it now stands as a monument to their extinction.",
-        "A great scientific discovery was made here, leading to advancements in space travel.",
-        "This planet is known for its legendary storm, which has raged for millennia, influencing its weather patterns.",
-        "A significant political alliance formed here has shaped interstellar relations for generations.",
-        "In its early history, the planet was a barren wasteland, transformed into a lush paradise through terraforming efforts.",
-        "The remnants of a colossal space station still orbit this planet, a relic of its once-dominant spacefaring civilization.",
-        "It was once thought to be uninhabitable, but underground ecosystems were discovered, thriving in isolation.",
-        "The planet hosted a galactic summit that led to a groundbreaking peace treaty between rival factions.",
-        "An ancient prophecy foretold the rise of a great leader born on this planet, changing its fate forever.",
-        "The discovery of a rare mineral led to a gold rush, sparking an economic boom that lasted decades.",
-        "This planet was the first to establish a university of interstellar knowledge, attracting scholars from across the galaxy.",
-        "Its unique biosphere has made it a key location for scientific research on alien life forms.",
-        "The planet's rich folklore and myths have shaped its culture, celebrating heroes and legendary figures.",
-        "A catastrophic event, known as the Great Collapse, drastically altered its terrain and climate.",
-        "The last known dragon-like creatures were sighted here, inspiring countless tales of adventure.",
-        "Once a paradise, it was ravaged by climate change, leading to a struggle for survival among its inhabitants.",
-        "A forgotten war left this planet with ancient ruins that tell tales of heroism and tragedy.",
-        "Home to a mysterious artifact that grants incredible powers, attracting adventurers from across the galaxy.",
-        "This planet was the birthplace of a legendary explorer who charted the unknown regions of space.",
-        "Its deep canyons and vast chasms hide secrets of ancient civilizations waiting to be uncovered.",
-        "A thriving trade hub, it became the center of an intergalactic marketplace that spanned light-years.",
-        "The planet's flora has evolved to produce unique compounds sought after by medicinal researchers.",
-        "Once considered a barren rock, it became a vital mining colony, transforming its economy.",
-        "The lush forests here are said to harbor spirits that protect the land from invaders.",
-        "A significant scientific accident changed the course of its history, leading to unforeseen consequences.",
-        "It was a popular vacation destination for galactic elites, known for its breathtaking landscapes.",
-        "The rise of an influential political figure on this planet shifted the balance of power in the galaxy.",
-        "Its inhabitants have a rich oral tradition, passing down stories of bravery and wisdom through generations.",
-        "A deep-space anomaly near the planet revealed unexpected phenomena that changed scientific understanding.",
-        "This planet was once covered in lush jungles, now replaced by sprawling cities after rapid industrialization.",
-        "An ancient portal found here connects to other dimensions, drawing scholars and adventurers alike.",
-        "The planet's ice caps hold secrets of a long-lost civilization frozen in time.",
-        "A great migration of its inhabitants led to the establishment of colonies on distant worlds.",
-        "This planet’s atmosphere is filled with bioluminescent organisms, creating breathtaking night skies.",
-        "Once a major center for interstellar trade, it now struggles with economic decline.",
-        "A devastating plague swept through, forever altering the social structure of its society.",
-        "The discovery of alien ruins has sparked intense archaeological interest and exploration.",
-        "A powerful psychic being was born here, influencing the fate of countless worlds.",
-        "The planet's unique gravitational anomalies have puzzled scientists for generations.",
-        "Once a barren wasteland, a massive irrigation project turned it into a thriving agricultural hub.",
-        "A cultural renaissance flourished here, producing masterpieces in art, music, and literature.",
-        "The planet served as a neutral ground for historic peace talks between rival factions.",
-        "A rogue AI once dominated the planet, now a cautionary tale of technological excess.",
-        "Mythical creatures said to inhabit the forests have inspired countless legends and stories.",
-        "A mysterious energy source found deep within its core powers entire star systems."
-    };
+        // Check if the collided object is another planet
+        if (collision.gameObject.CompareTag("Planet"))
+        {
+            DestroyPlanet();
+        }
+    }
+
+    private void DestroyPlanet()
+    {
+        // Optionally, play an explosion effect or sound here
+        Destroy(gameObject); // Destroy the planet
+    }
 
     public void Initialize(string name, string resource, string history)
     {
         planetName = name;
         planetResources = resource;
-        planetHistory = planetHistories[Random.Range(0, planetHistories.Count)]; // Randomly select a history
+        planetHistory = history;
         gameObject.name = planetName;
+
+        // Add a Collider component if not already present
+        if (GetComponent<Collider>() == null)
+        {
+            gameObject.AddComponent<SphereCollider>();
+        }
     }
 
-    public string GetResource()
-    {
-        return planetResources;
-    }
-
-    public string GetName()
-    {
-        return planetName;
-    }
-
-    public string GetHistory() // New method to get history
-    {
-        return planetHistory;
-    }
+    public string GetResource() => planetResources;
+    public string GetName() => planetName;
+    public string GetHistory() => planetHistory;
 }

@@ -320,9 +320,18 @@ public class SolarSystemGenerator : MonoBehaviour
 
         void Update()
         {
-            transform.RotateAround(sun.position, Vector3.up, orbitSpeed * Time.deltaTime);
+            if (sun != null) // Check if sun is not null
+            {
+                transform.RotateAround(sun.position, Vector3.up, orbitSpeed * Time.deltaTime);
+            }
+            else
+            {
+                // Optionally log a warning or handle the case when the sun is missing
+                Debug.LogWarning("Sun transform is missing! Please ensure it is assigned correctly.");
+            }
         }
     }
+
 
     public class RotateAroundSelf : MonoBehaviour
     {

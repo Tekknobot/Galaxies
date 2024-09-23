@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class Asteroid : MonoBehaviour
 {
-    public float speed = 5f; // Speed of the asteroid
+    public float minSpeed = 3f; // Minimum speed of the asteroid
+    public float maxSpeed = 8f; // Maximum speed of the asteroid
     public GameObject fragmentPrefab; // Prefab for asteroid fragments
     public int fragmentCount = 5; // Number of fragments on collision
     public float fragmentForce = 50f; // Force applied to fragments on collision
@@ -37,9 +38,10 @@ public class Asteroid : MonoBehaviour
 
         // Calculate direction and set velocity towards the center of the planet
         Vector3 direction = (targetPlanet.position - transform.position).normalized;
+        float speed = Random.Range(minSpeed, maxSpeed); // Select random speed within the range
         rb.velocity = direction * speed;
 
-        Debug.Log("Asteroid " + gameObject.name + " initialized towards the center of " + targetPlanet.name);
+        Debug.Log("Asteroid " + gameObject.name + " initialized towards the center of " + targetPlanet.name + " with speed " + speed);
 
         // Add and configure the trail renderer for the asteroid
         TrailRenderer trail = gameObject.AddComponent<TrailRenderer>();

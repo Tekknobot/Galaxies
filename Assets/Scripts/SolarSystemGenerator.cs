@@ -118,6 +118,18 @@ public class SolarSystemGenerator : MonoBehaviour
     private List<Vector3> planetPositions = new List<Vector3>();
     public TextMeshProUGUI planetBioText; // Reference to the UI Text for bios
 
+    // Neon color list
+    private List<Color> neonColors = new List<Color>
+    {
+        new Color(0.5f, 0.9f, 0.9f), // Cyan
+        new Color(1.0f, 0.1f, 0.6f), // Pink
+        new Color(0.1f, 0.9f, 0.1f), // Lime green
+        new Color(1.0f, 0.8f, 0.1f), // Yellow
+        new Color(0.6f, 0.1f, 1.0f), // Purple
+        new Color(1.0f, 0.1f, 0.1f), // Red
+        new Color(0.1f, 0.6f, 1.0f)  // Blue
+    };
+
     void Start()
     {
         CreateSun();

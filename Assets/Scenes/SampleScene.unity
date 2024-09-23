@@ -16145,10 +16145,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c01bf51d392094760b065deb99dbfd8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gasCloudParticlePrefab: {fileID: 2560698184174401682, guid: ac77bdf1c7a0b441299be81b90dd6088, type: 3}
+  gasCloudParticlePrefabs:
+  - {fileID: 2560698184174401682, guid: e99943a8ebe054a4ba08319af432dd4b, type: 3}
+  - {fileID: 2560698184174401682, guid: ac77bdf1c7a0b441299be81b90dd6088, type: 3}
+  - {fileID: 2560698184174401682, guid: 6f77c0678c84b4d24a63cb1507c588ed, type: 3}
+  - {fileID: 2560698184174401682, guid: 2c37ae5c1fce04afeafd921847e24428, type: 3}
+  - {fileID: 2560698184174401682, guid: 441caf3a076594cb1a86be0a5c83c61a, type: 3}
   maxCloudsPerPlanet: 1
-  minDistanceFromPlanet: 2
-  maxDistanceFromPlanet: 10
+  minDistanceFromPlanet: 3
+  maxDistanceFromPlanet: 13
   numberOfSelectedPlanets: 5
 --- !u!4 &1597396560
 Transform:

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GasCloudParticleGenerator : MonoBehaviour
 {
-    public GameObject gasCloudParticlePrefab; // Prefab for the gas cloud particle system
+    public GameObject[] gasCloudParticlePrefabs; // Array of prefabs for the gas cloud particle systems
     public int maxCloudsPerPlanet = 3; // Maximum number of gas clouds per selected planet
     public float minDistanceFromPlanet = 2f; // Minimum distance from the planet
     public float maxDistanceFromPlanet = 10f; // Maximum distance from the planet
@@ -36,9 +36,13 @@ public class GasCloudParticleGenerator : MonoBehaviour
                 // Generate a random position around the planet
                 Vector3 randomDirection = Random.onUnitSphere; // Random direction
                 float randomDistance = Random.Range(minDistanceFromPlanet, maxDistanceFromPlanet);
-
                 Vector3 position = planet.transform.position + randomDirection * randomDistance;
-                Instantiate(gasCloudParticlePrefab, position, Quaternion.identity);
+
+                // Randomly pick a prefab from the array
+                GameObject chosenPrefab = gasCloudParticlePrefabs[Random.Range(0, gasCloudParticlePrefabs.Length)];
+
+                // Instantiate the chosen prefab at the calculated position
+                Instantiate(chosenPrefab, position, Quaternion.identity);
             }
         }
     }

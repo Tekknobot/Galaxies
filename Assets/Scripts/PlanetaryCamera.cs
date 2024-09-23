@@ -15,6 +15,10 @@ public class PlanetaryCamera : MonoBehaviour
     public float cameraOffsetY = 20f; // Vertical offset
     public float cameraOffsetZ = 50f; // Distance offset along Z-axis
 
+    public float zoomSpeed = 10f; // Speed of zooming in and out
+    public float minZoom = 20f; // Minimum field of view
+    public float maxZoom = 60f; // Maximum field of view
+
     // Reference to the player movement script
     public MonoBehaviour playerMovement; // Replace with your actual player movement script or controller
 
@@ -60,6 +64,9 @@ public class PlanetaryCamera : MonoBehaviour
             Vector3 directionToPlanet = currentTarget.position - planetCamera.transform.position;
             Quaternion targetRotation = Quaternion.LookRotation(directionToPlanet);
             planetCamera.transform.rotation = Quaternion.Slerp(planetCamera.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+            // Handle zoom input
+            HandleZoomInput();
         }
     }
 
@@ -183,6 +190,26 @@ public class PlanetaryCamera : MonoBehaviour
             // Position the camera using the X, Y, and Z offsets relative to the planet
             Vector3 offset = new Vector3(cameraOffsetX, cameraOffsetY, cameraOffsetZ);
             planetCamera.transform.position = target.position + offset;
+        }
+    }
+
+    private void HandleZoomInput()
+    {
+        if (Gamepad.current != null)
+        {
+            if (Gamepad.current.leftShoulder.isPressed)
+            {
+                // Zoom in
+                planetCamera.fieldOfView -= zoomSpeed * Time.deltaTime;
+            }
+            if (Gamepad.current.rightShoulder.isPressed)
+            {
+                // Zoom out
+                planetCamera.fieldOfView += zoomSpeed * Time.deltaTime;
+            }
+
+            // Clamp the field of view to the min and max values
+            planetCamera.fieldOfView = Mathf.Clamp(planetCamera.fieldOfView, minZoom, maxZoom);
         }
     }
 

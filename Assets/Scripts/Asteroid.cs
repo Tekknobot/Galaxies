@@ -13,8 +13,7 @@ public class Asteroid : MonoBehaviour
     public float trailTime = 1.5f; // Duration of the trail
     public float trailStartWidth = 0.5f; // Width at the start of the trail
     public float trailEndWidth = 0.1f; // Width at the end of the trail
-    public Color trailStartColor = new Color(1f, 1f, 0f, 1f); // Start color (yellow)
-    public Color trailEndColor = new Color(1f, 0.5f, 0f, 0f); // End color (orange to transparent)
+    public Material trailMaterial; // Public material for the trail renderer
 
     public Vector3 asteroidScale = new Vector3(1f, 1f, 1f); // Scale for the asteroid
     public float fadeDuration = 1f; // Duration of the fade-out effect
@@ -41,18 +40,10 @@ public class Asteroid : MonoBehaviour
         rb.velocity = direction * speed;
 
         Debug.Log("Asteroid " + gameObject.name + " initialized towards the center of " + targetPlanet.name);
-        
+
         // Add and configure the trail renderer for the asteroid
         TrailRenderer trail = gameObject.AddComponent<TrailRenderer>();
-        trail.time = trailTime; // Duration of the trail
-        trail.startWidth = trailStartWidth; // Width at the start of the trail
-        trail.endWidth = trailEndWidth; // Width at the end of the trail
-        trail.material = new Material(Shader.Find("Sprites/Default"));
-        trail.startColor = trailStartColor; // Start color
-        trail.endColor = trailEndColor; // End color
-        trail.autodestruct = true; // Automatically destroy the trail
-        trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; // Disable shadows for trail
-        trail.minVertexDistance = 0.1f; // Distance between vertices for smoother trails
+        ConfigureTrailRenderer(trail);
 
         // Optional: Add a light to enhance the trail effect
         Light trailLight = gameObject.AddComponent<Light>();
@@ -61,6 +52,50 @@ public class Asteroid : MonoBehaviour
         trailLight.range = 5f;
         trailLight.intensity = 2f;
         trailLight.shadows = LightShadows.None; // Disable shadows for the light
+    }
+
+    private void ConfigureTrailRenderer(TrailRenderer trail)
+    {
+        // Set trail time and width
+        trail.time = trailTime; // Duration of the trail
+        trail.startWidth = trailStartWidth; // Width at the start of the trail
+        trail.endWidth = trailEndWidth; // Width at the end of the trail
+
+        // Set color gradient
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(
+            new GradientColorKey[]
+            {
+                new GradientColorKey(Color.yellow, 0.0f),    // Start with yellow
+                new GradientColorKey(Color.red, 0.5f),       // Transition to red
+                new GradientColorKey(new Color(1f, 0f, 0f, 0f), 1.0f) // End transparent
+            },
+            new GradientAlphaKey[]
+            {
+                new GradientAlphaKey(1f, 0.0f),    // Fully opaque at the start
+                new GradientAlphaKey(1f, 0.3f),    // Opaque at mid-point
+                new GradientAlphaKey(0f, 1.0f)     // Fully transparent at the end
+            }
+        );
+        trail.colorGradient = gradient;
+
+        // Assign or create trail material
+        if (trailMaterial != null)
+        {
+            // Use the provided material
+            trail.material = trailMaterial;
+        }
+        else
+        {
+            // Create a default material with standard properties
+            trail.material = new Material(Shader.Find("Particles/Standard Unlit"));
+            trail.material.SetColor("_TintColor", Color.white); // White base color for the tint
+        }
+
+        // Configure trail properties
+        trail.minVertexDistance = 0.1f; // Distance between vertices for smoother trails
+        trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; // Disable shadows for trail
+        trail.autodestruct = true; // Automatically destroy the trail after the asteroid is destroyed
     }
 
     private void OnCollisionEnter(Collision collision)

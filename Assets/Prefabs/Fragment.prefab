@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7441cd3ee38f140dfae97570a6c4905d, type: 2}
+  - {fileID: 2100000, guid: 7506bae57aacb419ebcba546435d6dce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -119,7 +119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54107b01531be484eb0b3c2e82a82362, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifetime: 10
+  minLifetime: 5
+  maxLifetime: 10
 --- !u!54 &-6782881065920480683
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -22,7 +22,7 @@ public class GasCloudParticleGenerator : MonoBehaviour
         planets.Shuffle();
 
         // Select a random number of planets to create gas clouds around
-        int selectedPlanetsCount = Mathf.Min(numberOfSelectedPlanets, planets.Length);
+        int selectedPlanetsCount = Random.Range(1, numberOfSelectedPlanets);
 
         for (int i = 0; i < selectedPlanetsCount; i++)
         {

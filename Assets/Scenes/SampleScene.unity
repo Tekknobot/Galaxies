@@ -4990,6 +4990,9 @@ MonoBehaviour:
   cameraOffsetX: 1000
   cameraOffsetY: 1000
   cameraOffsetZ: 500
+  zoomSpeed: 10
+  minZoom: 20
+  maxZoom: 60
   playerMovement: {fileID: 488757206}
 --- !u!4 &480365444
 Transform:
@@ -11021,7 +11024,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   asteroidPrefab: {fileID: 2532474926791797283, guid: 07ab8dc53ab58482cb692660a645de4a, type: 3}
-  spawnInterval: 5
+  spawnInterval: 3
   planetTag: Planet
   spawnRadius: 10000
 --- !u!4 &1234198159

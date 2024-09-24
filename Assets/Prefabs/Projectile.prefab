@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6795638081220042424}
   m_Layer: 0
   m_Name: Projectile
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,11 +121,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minSpeed: 5
   maxSpeed: 5
-  accelerationScale: 2000
+  accelerationScale: 500
   accelerationDuration: 10
   fragmentPrefab: {fileID: 2532474926791797283, guid: bda337d0356a747fd97363b2c442ccfe, type: 3}
   fragmentCount: 10
-  fragmentForce: 250
+  fragmentForce: 0
   fadeDuration: 3
 --- !u!54 &6795638081220042424
 Rigidbody:

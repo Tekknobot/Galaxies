@@ -40,7 +40,7 @@ public class Projectile : MonoBehaviour
     private IEnumerator IncreaseVelocityOverTime()
     {
         // Wait for 2 seconds before starting to increase speed
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0f);
 
         float initialSpeed = rb.velocity.magnitude; // Get the current speed
         float targetSpeed = initialSpeed * accelerationScale; // Calculate target speed

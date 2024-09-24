@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 897731043991761699}
   - component: {fileID: 957962175390347445}
   - component: {fileID: 6795638081220042424}
+  - component: {fileID: 1493805180070380224}
   m_Layer: 0
   m_Name: FakeProjectile
   m_TagString: Projectile
@@ -111,3 +112,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &1493805180070380224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4896296158801790483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8606c7df759c44780b221c9f752ce70d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lifetime: 2

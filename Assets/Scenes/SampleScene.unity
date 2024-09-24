@@ -5149,8 +5149,8 @@ MonoBehaviour:
   impactEffectPrefab: {fileID: 4896296158801790483, guid: 2bd59b5c3b5c8455e9fd13fd4eca1795, type: 3}
   spawnPoint1: {fileID: 1902164598}
   spawnPoint2: {fileID: 2100637764}
-  fireRate: 0.1
-  projectileForce: 500
+  fireRate: 0.01
+  projectileForce: 40000
   raycastRange: 5000
   raycastDelay: 0
 --- !u!1001 &527788331
@@ -10901,12 +10901,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -21592,8 +21592,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 705507995}
   - {fileID: 971987016}
-  - {fileID: 939302585}
   - {fileID: 1489428551}
+  - {fileID: 939302585}
   - {fileID: 1256574640}
   - {fileID: 480365444}
   - {fileID: 2128860488}

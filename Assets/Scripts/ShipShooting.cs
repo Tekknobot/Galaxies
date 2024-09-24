@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class ShipShooting : MonoBehaviour
@@ -21,6 +22,9 @@ public class ShipShooting : MonoBehaviour
 
     // Raycast range (distance the ray can travel)
     public float raycastRange = 100f;
+
+    // Delay time for the raycast after shooting
+    public float raycastDelay = 0.1f; // Time in seconds to delay the raycast
 
     // Reference to the ship's Rigidbody
     private Rigidbody rb;
@@ -53,13 +57,13 @@ public class ShipShooting : MonoBehaviour
         // Check if spawn points and projectile prefab are assigned
         if (spawnPoint1 != null && spawnPoint2 != null && projectilePrefab != null)
         {
-            // Perform raycasting from both spawn points
-            RaycastFromSpawnPoint(spawnPoint1);
-            RaycastFromSpawnPoint(spawnPoint2);
-
             // Instantiate projectiles from both spawn points
             LaunchProjectile(spawnPoint1);
             LaunchProjectile(spawnPoint2);
+
+            // Start the coroutine to delay raycasting
+            StartCoroutine(DelayRaycast(spawnPoint1));
+            StartCoroutine(DelayRaycast(spawnPoint2));
         }
         else
         {
@@ -87,8 +91,11 @@ public class ShipShooting : MonoBehaviour
         }
     }
 
-    void RaycastFromSpawnPoint(Transform spawnPoint)
+    private IEnumerator DelayRaycast(Transform spawnPoint)
     {
+        // Wait for the specified delay time
+        yield return new WaitForSeconds(raycastDelay);
+
         // Perform the raycast from the spawn point forward
         RaycastHit hit;
         if (Physics.Raycast(spawnPoint.position, spawnPoint.forward, out hit, raycastRange))

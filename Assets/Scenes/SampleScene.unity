@@ -5133,6 +5133,83 @@ MonoBehaviour:
   planetNameText: {fileID: 1522793613}
   planetBioText: {fileID: 824531571}
   planetHistoryText: {fileID: 727115479}
+--- !u!1001 &527788331
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7388690178731990417, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_MaxParticleSize
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833563606057848068, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 20000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833563606057848068, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833563606057848068, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833563606057848068, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215284334772373044, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807928229710199609, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
+      propertyPath: m_Name
+      value: UniverseStars
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1f78f5de6b1c34ddcabd86b8ed91c022, type: 3}
 --- !u!1 &537396988
 GameObject:
   m_ObjectHideFlags: 0
@@ -21210,6 +21287,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 705507995}
+  - {fileID: 971987016}
   - {fileID: 939302585}
   - {fileID: 1489428551}
   - {fileID: 1256574640}
@@ -21217,6 +21295,6 @@ SceneRoots:
   - {fileID: 2128860488}
   - {fileID: 1597396560}
   - {fileID: 915185910}
-  - {fileID: 971987016}
   - {fileID: 1762181775}
   - {fileID: 1234198159}
+  - {fileID: 527788331}

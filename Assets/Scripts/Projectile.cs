@@ -111,4 +111,38 @@ public class Projectile : MonoBehaviour
         renderer.material.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
         Destroy(gameObject);
     }
+
+    private void DentObject(GameObject hitObject, Vector3 hitPoint, float dentRadius, float dentDepth)
+    {
+        MeshFilter meshFilter = hitObject.GetComponent<MeshFilter>();
+        if (meshFilter == null) return; // If there's no mesh, we can't deform it
+
+        Mesh mesh = meshFilter.mesh;
+        Vector3[] vertices = mesh.vertices;
+
+        // Convert hit point to local space of the object
+        Vector3 localHitPoint = hitObject.transform.InverseTransformPoint(hitPoint);
+
+        // Loop through each vertex and modify it based on distance from hit point
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            float distanceToHitPoint = Vector3.Distance(vertices[i], localHitPoint);
+
+            // If the vertex is within the dent radius, move it inward to create a dent
+            if (distanceToHitPoint < dentRadius)
+            {
+                // Calculate the magnitude of the dent based on distance from the hit point
+                float dentMagnitude = (dentRadius - distanceToHitPoint) / dentRadius * dentDepth;
+
+                // Move the vertex inward (away from the surface) to create the dent
+                vertices[i] -= (localHitPoint - vertices[i]).normalized * dentMagnitude;
+            }
+        }
+
+        // Update the mesh with the new vertices
+        mesh.vertices = vertices;
+        mesh.RecalculateNormals(); // Recalculate normals for proper lighting/shading
+        mesh.RecalculateBounds();  // Update mesh bounds to include deformed vertices
+    }
+
 }

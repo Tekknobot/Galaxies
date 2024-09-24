@@ -19,6 +19,9 @@ public class Asteroid : MonoBehaviour
     public Vector3 asteroidScale = new Vector3(1f, 1f, 1f); // Scale for the asteroid
     public float fadeDuration = 1f; // Duration of the fade-out effect
 
+    public float craterRadius = 1f; // Radius of the crater to create on collision
+    public float craterDepth = 0.3f; // Depth of the crater
+
     private Rigidbody rb;
     private bool hasCollided = false; // Track if the asteroid has collided
 
@@ -125,6 +128,9 @@ public class Asteroid : MonoBehaviour
                 }
             }
 
+            // Create a crater at the impact point
+            CreateCrater(collision.gameObject, collision.contacts[0].point, craterRadius, craterDepth);
+
             // Start fade-out before destroying the asteroid
             StartCoroutine(FadeAndDestroy());
         }
@@ -148,5 +154,41 @@ public class Asteroid : MonoBehaviour
         // Ensure the asteroid is completely transparent before destroying
         renderer.material.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
         Destroy(gameObject);
+    }
+
+    // Method to create a realistic curved crater on the object that was hit
+    private void CreateCrater(GameObject hitObject, Vector3 hitPoint, float craterRadius, float craterDepth)
+    {
+        MeshFilter meshFilter = hitObject.GetComponent<MeshFilter>();
+        if (meshFilter == null) return; // If there's no mesh, we can't deform it
+
+        Mesh mesh = meshFilter.mesh;
+        Vector3[] vertices = mesh.vertices;
+
+        // Convert hit point to local space of the object
+        Vector3 localHitPoint = hitObject.transform.InverseTransformPoint(hitPoint);
+
+        // Loop through each vertex and modify it based on distance from hit point
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            float distanceToHitPoint = Vector3.Distance(vertices[i], localHitPoint);
+
+            // If the vertex is within the crater radius, move it inward to create a curved crater
+            if (distanceToHitPoint < craterRadius)
+            {
+                // Calculate the crater curve using a smooth falloff (parabolic or circular)
+                // We use a parabola: y = -(x^2) for a smooth bowl shape
+                float normalizedDistance = distanceToHitPoint / craterRadius; // Value between 0 (center) and 1 (edge)
+                float craterMagnitude = Mathf.Lerp(craterDepth, 0f, normalizedDistance * normalizedDistance); // Depth is more intense near the center
+
+                // Move the vertex inward (toward the hit point) to create the crater
+                vertices[i] -= (localHitPoint - vertices[i]).normalized * craterMagnitude;
+            }
+        }
+
+        // Update the mesh with the new vertices
+        mesh.vertices = vertices;
+        mesh.RecalculateNormals(); // Recalculate normals for proper lighting/shading
+        mesh.RecalculateBounds();  // Update mesh bounds to include deformed vertices
     }
 }
